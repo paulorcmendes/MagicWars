@@ -3,23 +3,23 @@ local anim8 = require 'anim8'
 
 local M = {}
 
-local life
 local mana
-local robe = {"white", "red", "black"}
-local magic
+local robe = {}
+local currentRobe
 
+function getRobes()
+	 --nothing
+end
+function reloadPlayer()
+	mana = 5 + robe[currentRobe].mana
+end
+getRobes()
+reloadPlayer()
 
-function invokePlayer(index)
-
-
-	return currentRobe
+function invokePlayer()
+	local character = {mana, robe}
+	return character
 end
 
-M.mana = mana
-M.life = life
-M.robe = robe
-M.magic = magic
 M.invokePlayer = invokePlayer
-
-
 return M

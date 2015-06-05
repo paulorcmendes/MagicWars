@@ -1,6 +1,7 @@
 --##Game Logic
 --#Imports
 local player = require("player")
+character = player.invokeCharacter()
 
 --#Variables
 local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
@@ -34,7 +35,8 @@ function love.draw()
 	elseif gamestate == "menu" then
 
 	elseif gamestate == "onPlay" then
-		love.graphics.print("player.invokePlayer()")
+		
+		love.graphics.print(character[1])
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then

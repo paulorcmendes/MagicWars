@@ -1,25 +1,32 @@
 --Imports
 local anim8 = require 'anim8'
-
+local saveFile = require 'saveFile'
 local M = {}
+local mana = 100
+local robe
+local character = {mana, robe}
 
-local mana
-local robe = {}
-local currentRobe
-
-function getRobes()
-	 --nothing
+function savePlayer()
+	success = love.filesystem.write( "character.sav", saveFile.tableShow(character, "loadedCharacter"))	
 end
-function reloadPlayer()
-	mana = 5 + robe[currentRobe].mana
+function getSavedCharacter()
+	chunk = love.filesystem.load( "character.sav" )
+	chunk()
+	return loadedCharacter
 end
-getRobes()
-reloadPlayer()
+function reloadCharacter()
+	character[1] = character[1]+5
 
-function invokePlayer()
-	local character = {mana, robe}
+end
+function invokeCharacter()	
 	return character
 end
 
-M.invokePlayer = invokePlayer
+
+
+savePlayer()
+character = getSavedCharacter()
+reloadCharacter()
+M.invokeCharacter = invokeCharacter
+
 return M

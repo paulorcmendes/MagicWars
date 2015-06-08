@@ -19,7 +19,7 @@ function love.update(dt)
 	elseif gamestate == "menu" then
 
 	elseif gamestate == "onPlay" then
-		character[4]:update(dt)
+		character.anim:update(dt)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
@@ -36,8 +36,8 @@ function love.draw(dt)
 	elseif gamestate == "menu" then
 
 	elseif gamestate == "onPlay" then
-		character[4]:draw(character[3], 100, 200)
-		love.graphics.print(character[1])
+		character.anim:draw(character.image, (love.graphics.getWidth()/2) - 23.5, love.graphics.getHeight() - 50)
+		love.graphics.print(character.mana)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then

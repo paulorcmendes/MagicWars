@@ -2,36 +2,48 @@
 local anim8 = require 'anim8'
 local saveFile = require 'saveFile'
 local M = {}
+local nomeArquivo = "character.sav"
 local defaultMana = 5
 local defaultRobe = 1
 local character ={}
 local defaultSpeed = 5
 
 function savePlayer()
-	success = love.filesystem.write( "character.sav", saveFile.tableShow(character, "loadedCharacter"))
+	success = love.filesystem.write(nomeArquivo , saveFile.tableShow(character, "loadedCharacter"))
 end
 function getSavedCharacter()
-	chunk = love.filesystem.load( "character.sav" )
-	chunk()
+	existeArquivo = love.filesystem.exists(nomeArquivo)
+
+	if existeArquivo then 
+		chunk = love.filesystem.load(nomeArquivo)	
+		chunk()
+	else		
+		character.mana = defaultMana + defaultRobe
+		character.speed = defaultSpeed + defaultRobe
+		savePlayer()
+		getSavedCharacter()
+	end
+	
 	return loadedCharacter
 end
 
 function invokeCharacter()
+	character = getSavedCharacter()
 	if defaultRobe == 1 then
-		image = love.graphics.newImage("white.png")
-		local g = anim8.newGrid(47, 48, image:getWidth(), image:getHeight())
-		character.mana = defaultMana + defaultRobe
-		character.image = image
-		character.anim = anim8.newAnimation(g('4-6',1), 0.1)
-		character.speed = defaultSpeed + defaultRobe
+		nomeImagem = "white.png"
 	end
+
+	image = love.graphics.newImage(nomeImagem)
+	local g = anim8.newGrid(47, 48, image:getWidth(), image:getHeight())
+	character.image = image
+	character.anim = anim8.newAnimation(g('4-6',1), 0.1)
+	
 	return character
 end
 
 
 
---savePlayer()
---character = getSavedCharacter()
+
 
 M.invokeCharacter = invokeCharacter
 

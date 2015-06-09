@@ -6,7 +6,7 @@ local nomeArquivo = "character.sav"
 local defaultMana = 5
 local defaultRobe = 1
 local character ={}
-local defaultSpeed = 5
+local defaultSpeed = 300
 
 function savePlayer()
 	success = love.filesystem.write(nomeArquivo , saveFile.tableShow(character, "loadedCharacter"))
@@ -19,7 +19,7 @@ function getSavedCharacter()
 		chunk()
 	else		
 		character.mana = defaultMana + defaultRobe
-		character.speed = defaultSpeed + defaultRobe
+		character.speed = defaultSpeed + defaultRobe*50
 		savePlayer()
 		getSavedCharacter()
 	end

@@ -8,7 +8,9 @@ local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
 
 --#On Start
 function  love.load()
-	gamestate = "onPlay"
+	gamestate = "menu"	
+end
+function carregaGame()	
 	character = player.invokeCharacter()
 	largura = love.graphics.getWidth()
 	altura = love.graphics.getHeight()
@@ -17,14 +19,24 @@ function  love.load()
 	x = ((largura-47)/2)  
 	y = altura
 	musica = love.audio.newSource("sound.mp3")
-end
+	floor = love.graphics.newImage("floor.png")
+	floor:setWrap( "repeat", "repeat" )
+	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
+	backGround = love.graphics.newImage("background.png")
+	backGround:setWrap( "repeat", "repeat" )
+	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)
 
+end
 --#On every frame
 function love.update(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-
+		
+		if love.keyboard.isDown(" ") then
+			carregaGame()
+			gamestate = "onPlay"			
+		end
 	elseif gamestate == "onPlay" then
 		love.audio.play(musica)
 		character.anim:update(dt)
@@ -36,6 +48,10 @@ function love.update(dt)
    		end 
    		if love.keyboard.isDown("a") and podeAtirar() then 
    			shoot()
+   		end
+   		if love.keyboard.isDown("escape") then
+   			love.audio.stop()
+   			love.load()
    		end
    		if x<0 then x=0 end  
    		if x>largura-47 then x = largura-47 end
@@ -55,11 +71,12 @@ function love.draw(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-
+		love.graphics.print("Press space to start the best game of the world")
 	elseif gamestate == "onPlay" then
-
-		character.anim:draw(character.image, x, altura - 50)
-		love.graphics.print(character.mana)
+		love.graphics.draw(backGround, quadBack, 0, 0)
+		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
+		character.anim:draw(character.image, x, altura - 80)		
+		love.graphics.print(character.mana.. "Press escape to return to the menu")
 		local i, o
 		for i, o in ipairs(bullets) do
 			love.graphics.circle('fill', o.bx, o.by, 2, 8)
@@ -74,6 +91,7 @@ function love.draw(dt)
 end
 
 function shoot()
+	character.mana = character.mana+1
 	ultimoTiro = os.clock()
 	table.insert(bullets, {
 			bx = x+47/2,
@@ -93,7 +111,7 @@ function updateBullets(dt)
 	local i, o
 	for i, o in ipairs(bullets) do
 		o.by = o.by - 1* o.bspeed * dt
-		if (o.by < -20) or (o.by > love.graphics.getHeight() + 20) then
+		if  (o.by < -20) or (o.by > love.graphics.getHeight() + 20) then
 			table.remove(bullets, i)
 		end
 	end

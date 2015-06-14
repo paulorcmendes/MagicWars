@@ -19,6 +19,8 @@ function carregaGame()
 	x = ((largura-47)/2)  
 	y = altura
 	musica = love.audio.newSource("sound.mp3")
+	musica:setVolume(0.2)
+	especial = love.audio.newSource("especial.mp3")
 	floor = love.graphics.newImage("floor.png")
 	floor:setWrap( "repeat", "repeat" )
 	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
@@ -49,12 +51,16 @@ function love.update(dt)
    		if love.keyboard.isDown("a") and podeAtirar() then 
    			shoot()
    		end
+   		if love.keyboard.isDown("d") then
+   			love.audio.play(especial)
+   		end
    		if love.keyboard.isDown("escape") then
    			love.audio.stop()
    			love.load()
    		end
    		if x<0 then x=0 end  
    		if x>largura-47 then x = largura-47 end
+
 
 	elseif gamestate == "onPause" then
 
@@ -89,6 +95,7 @@ function love.draw(dt)
 
 	end
 end
+
 
 function shoot()
 	character.mana = character.mana+1

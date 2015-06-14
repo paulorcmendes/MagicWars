@@ -17,17 +17,21 @@ function carregaGame()
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
 	x = ((largura-47)/2)  
-	y = altura
+	y = altura	
+	esmaecerTela = false
+	apertou = false
+	esmaece = false
 	musica = love.audio.newSource("sound.mp3")
-	musica:setVolume(0.2)
+	musica:setVolume(0.25)
 	especial = love.audio.newSource("especial.mp3")
+	especial:setVolume(5)
 	floor = love.graphics.newImage("floor.png")
 	floor:setWrap( "repeat", "repeat" )
 	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
 	backGround = love.graphics.newImage("background.png")
 	backGround:setWrap( "repeat", "repeat" )
 	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)
-
+	
 end
 --#On every frame
 function love.update(dt)
@@ -44,7 +48,7 @@ function love.update(dt)
 		character.anim:update(dt)
 		if love.keyboard.isDown("right") then
       		x = x + (character.speed * dt)
-   		end
+   		end  
    		if love.keyboard.isDown("left") then
       		x = x - (character.speed * dt)
    		end 
@@ -53,6 +57,8 @@ function love.update(dt)
    		end
    		if love.keyboard.isDown("d") then
    			love.audio.play(especial)
+   			comecoEsmaece = os.clock()
+   			apertou = true
    		end
    		if love.keyboard.isDown("escape") then
    			love.audio.stop()
@@ -60,7 +66,32 @@ function love.update(dt)
    		end
    		if x<0 then x=0 end  
    		if x>largura-47 then x = largura-47 end
-
+   		if apertou then 
+   			if os.clock()-comecoEsmaece>3.5 then 
+   				esmaece = true
+   				comecoEsmaece = os.clock()
+   				nComeco = comecoEsmaece   				
+   			end
+   		end
+   		if esmaece then
+   			tAtual = os.clock()
+   			if tAtual-comecoEsmaece<=1 then
+   				if tAtual-nComeco<=0.02 then 
+   					esmaecerTela = true
+   				else 
+   					esmaecerTela = false
+   				end
+   				if tAtual-nComeco>0.04 then
+   					nComeco = tAtual
+   				end
+   				musica:setVolume(0.15)
+   			else
+   				musica:setVolume(0.25)
+   			    apertou = false
+   			    esmaece = false
+   			    esmaecerTela = false
+   			end
+   		end
 
 	elseif gamestate == "onPause" then
 
@@ -87,6 +118,10 @@ function love.draw(dt)
 		for i, o in ipairs(bullets) do
 			love.graphics.circle('fill', o.bx, o.by, 2, 8)
 		end
+		if esmaecerTela then 
+			love.graphics.setColor(250, 250, 250)
+			love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+		end
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
@@ -95,7 +130,9 @@ function love.draw(dt)
 
 	end
 end
-
+function esmaecerTela(comecoEsmaece)
+	
+end
 
 function shoot()
 	character.mana = character.mana+1

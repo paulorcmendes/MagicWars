@@ -34,7 +34,7 @@ function carregaGame()
 
 	manaBack = love.graphics.newImage("Sprites/manaBack.png")
 	manaBack:setWrap( "repeat", "repeat" )
-	quadManaBack = love.graphics.newQuad(0, 0, largura/2, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight())
+	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
 
 	manaBar = love.graphics.newImage("Sprites/manaBar.png")
 	
@@ -50,6 +50,7 @@ function love.update(dt)
 			gamestate = "onPlay"			
 		end
 	elseif gamestate == "onPlay" then
+		character.mana=character.mana+0.03
 		love.audio.play(musica)
 		character.anim:update(dt)
 		if love.keyboard.isDown("right") then
@@ -61,7 +62,8 @@ function love.update(dt)
    		if love.keyboard.isDown("a") and podeAtirar() then 
    			shoot()
    		end
-   		if love.keyboard.isDown("d") then
+   		if love.keyboard.isDown("d") and character.mana>=75 then
+   			character.mana = character.mana-75
    			love.audio.play(especial)
    			comecoEsmaece = os.clock()
    			apertou = true
@@ -73,7 +75,7 @@ function love.update(dt)
    		if x<0 then x=0 end  
    		if x>largura-47 then x = largura-47 end
    		if apertou then 
-   			character.mana = 0
+   			
    			if os.clock()-comecoEsmaece>3.5 then 
    				esmaece = true
    				comecoEsmaece = os.clock()
@@ -101,8 +103,10 @@ function love.update(dt)
 
    		end
 
-   		quadManaBack = love.graphics.newQuad(0, 0, character.mana, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
-
+   		quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
+   		if character.mana>100 then 
+   			character.mana = 100
+   		end
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
@@ -149,7 +153,7 @@ function esmaecerTela(comecoEsmaece)
 end
 
 function shoot()
-	character.mana = character.mana+1
+	character.mana = character.mana-2
 	ultimoTiro = os.clock()
 	table.insert(bullets, {
 			bx = x+47/2,
@@ -158,11 +162,13 @@ function shoot()
 	})
 end
 function podeAtirar()
+	local tempo
 	if os.clock()-ultimoTiro<tempoDeTiro then
-		return false
+		tempo = false
 	else
-	    return true
+	    tempo = true
 	end	
+	return tempo and character.mana>=2
 end
 function updateBullets(dt)
 	-- update bullets:

@@ -3,7 +3,7 @@ local anim8 = require 'anim8'
 local saveFile = require 'saveFile'
 local M = {}
 local nomeArquivo = "character.sav"
-local defaultMana = 5
+local defaultMana = 100
 local defaultRobe = 1
 local character ={}
 local defaultSpeed = 300
@@ -17,18 +17,20 @@ function getSavedCharacter()
 	if existeArquivo then 
 		chunk = love.filesystem.load(nomeArquivo)	
 		chunk()
-	else		
-		character.mana = defaultMana + defaultRobe
-		character.speed = defaultSpeed + defaultRobe*50
 		savePlayer()
-		getSavedCharacter()
+	else		
+		
+		savePlayer()
+		--getSavedCharacter()
 	end
 	
 	return loadedCharacter
 end
 
 function invokeCharacter()
-	character = getSavedCharacter()
+	-- character = getSavedCharacter()
+		character.mana = defaultMana  
+		character.speed = defaultSpeed 
 	if defaultRobe == 1 then
 		nomeImagem = "white.png"
 	end

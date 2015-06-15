@@ -31,6 +31,12 @@ function carregaGame()
 	backGround = love.graphics.newImage("background.png")
 	backGround:setWrap( "repeat", "repeat" )
 	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)
+
+	manaBack = love.graphics.newImage("Sprites/manaBack.png")
+	manaBack:setWrap( "repeat", "repeat" )
+	quadManaBack = love.graphics.newQuad(0, 0, largura/2, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight())
+
+	manaBar = love.graphics.newImage("Sprites/manaBar.png")
 	
 end
 --#On every frame
@@ -67,6 +73,7 @@ function love.update(dt)
    		if x<0 then x=0 end  
    		if x>largura-47 then x = largura-47 end
    		if apertou then 
+   			character.mana = 0
    			if os.clock()-comecoEsmaece>3.5 then 
    				esmaece = true
    				comecoEsmaece = os.clock()
@@ -91,7 +98,10 @@ function love.update(dt)
    			    esmaece = false
    			    esmaecerTela = false
    			end
+
    		end
+
+   		quadManaBack = love.graphics.newQuad(0, 0, character.mana, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
 
 	elseif gamestate == "onPause" then
 
@@ -112,15 +122,19 @@ function love.draw(dt)
 	elseif gamestate == "onPlay" then
 		love.graphics.draw(backGround, quadBack, 0, 0)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
+
 		character.anim:draw(character.image, x, altura - 80)		
 		love.graphics.print(character.mana.. "Press escape to return to the menu")
 		local i, o
 		for i, o in ipairs(bullets) do
 			love.graphics.circle('fill', o.bx, o.by, 2, 8)
 		end
+
+		love.graphics.draw(manaBack, quadManaBack, 10, 10)
+		love.graphics.draw(manaBar, 7.5, 7.5)
 		if esmaecerTela then 
 			love.graphics.setColor(250, 250, 250)
-			love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+			love.graphics.rectangle("fill", 0, 0, largura, altura)
 		end
 	elseif gamestate == "onPause" then
 

@@ -21,7 +21,7 @@ function ataca(playerX, playerY, enemyX, enemyY)
 			tSprite = shoot,
 			tx = enemyX,
 			ty = enemyY,
-			tspeed = 400
+			tspeed = 10
 		})
 	end
 

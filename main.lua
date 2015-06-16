@@ -3,7 +3,6 @@
 local player = require("player")
 local anim8 = require 'anim8'
 local ponei = require 'ponei'
-local bullets = {}
 local enemies = {}
 local largura
 local altura 
@@ -23,8 +22,8 @@ function carregaGame()
 	altura = love.graphics.getHeight()
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
-	x = ((largura-47)/2)  
-	y = altura	
+	character.x = ((largura-47)/2)  
+	character.y = altura	
 	esmaecerTela = false
 	apertou = false
 	esmaece = false
@@ -61,13 +60,14 @@ function love.update(dt)
 		love.audio.play(musica)
 		character.anim:update(dt)
 		if love.keyboard.isDown("right") then
-      		x = x + (character.speed * dt)
+      		character.x = character.x + (character.speed * dt)
    		end  
    		if love.keyboard.isDown("left") then
-      		x = x - (character.speed * dt)
+      		character.x = character.x - (character.speed * dt)
    		end 
    		if love.keyboard.isDown("a") and podeAtirar() then 
-   			shoot()
+   			ultimoTiro = os.clock()   			
+   			player.shoot()
    		end
    		if love.keyboard.isDown("d") and character.mana>=75 then
    			character.mana = character.mana-75
@@ -79,8 +79,8 @@ function love.update(dt)
    			love.audio.stop()
    			love.load()
    		end
-   		if x<0 then x=0 end  
-   		if x>largura-47 then x = largura-47 end
+   		if character.x<0 then character.x=0 end  
+   		if character.x>largura-47 then character.x = largura-47 end
    		if apertou then 
    			
    			if os.clock()-comecoEsmaece>3.5 then 
@@ -109,7 +109,7 @@ function love.update(dt)
    			end
 
    		end
-
+   		updateEnemies(dt)
    		quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
    		if character.mana>100 then 
    			character.mana = 100
@@ -121,8 +121,7 @@ function love.update(dt)
 	elseif gamestate == "credits" then
 
 	end
-	updateBullets(dt)
-	updateEnemies()
+	
 end
 
 --Draw Objects
@@ -136,11 +135,11 @@ function love.draw(dt)
 		love.graphics.draw(backGround, quadBack, 0, 0)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 
-		character.anim:draw(character.image, x, altura - 80)		
+		character.anim:draw(character.image, character.x, altura - 80)		
 		--love.graphics.print(character.mana.. "Press escape to return to the menu")
-		local i, o
-		for i, o in ipairs(bullets) do
-			love.graphics.circle('fill', o.bx, o.by, 2, 8)
+		local i
+		for i in ipairs(player.bullets) do
+			love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 2, 8)
 		end
 
 		for i in ipairs(enemies) do
@@ -149,7 +148,7 @@ function love.draw(dt)
 			local j 
 
 			for j in ipairs(enemies[i].tiros) do
-				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].x, enemies[i].y)
+				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].tiros[j].tx, enemies[i].tiros[j].ty)
 			end
 
 		end
@@ -168,19 +167,7 @@ function love.draw(dt)
 
 	end
 end
-function esmaecerTela(comecoEsmaece)
-	
-end
 
-function shoot()
-	character.mana = character.mana-2
-	ultimoTiro = os.clock()
-	table.insert(bullets, {
-			bx = x+47/2,
-			by = y-50,
-			bspeed = 400
-	})
-end
 function podeAtirar()
 	local tempo
 	if os.clock()-ultimoTiro<tempoDeTiro then
@@ -190,20 +177,22 @@ function podeAtirar()
 	end	
 	return tempo and character.mana>=2
 end
-function updateBullets(dt)
-	-- update bullets:
-	local i, o
-	for i, o in ipairs(bullets) do
-		o.by = o.by - 1* o.bspeed * dt
-		if  (o.by < -20) or (o.by > love.graphics.getHeight() + 20) then
-			table.remove(bullets, i)
-		end
-	end
-end
-function updateEnemies()
-	local i 
 
+
+function updateEnemies(dt)
+	local i 
+	local j
 	for i in ipairs(enemies) do 
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())
+		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y)
+		for j in ipairs(enemies[i].tiros) do
+			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
+		end
+	end
+	for i in ipairs(player.bullets) do
+		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt
+		if  (player.bullets[i].by < -20) or (player.bullets[i].by > love.graphics.getHeight() + 20) then
+			table.remove(player.bullets, i)
+		end
 	end
 end

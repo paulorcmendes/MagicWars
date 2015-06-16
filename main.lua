@@ -2,7 +2,14 @@
 --#Imports
 local player = require("player")
 local anim8 = require 'anim8'
+local ponei = require 'ponei'
 local bullets = {}
+local enemies = {}
+local largura
+local altura 
+enemies[1] = ponei
+e.x = 50
+e.y = 50
 --#Variables
 local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
 
@@ -115,6 +122,7 @@ function love.update(dt)
 
 	end
 	updateBullets(dt)
+	updateEnemies()
 end
 
 --Draw Objects
@@ -123,15 +131,27 @@ function love.draw(dt)
 
 	elseif gamestate == "menu" then
 		love.graphics.print("Press space to start the best game of the world")
+
 	elseif gamestate == "onPlay" then
 		love.graphics.draw(backGround, quadBack, 0, 0)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 
 		character.anim:draw(character.image, x, altura - 80)		
-		love.graphics.print(character.mana.. "Press escape to return to the menu")
+		--love.graphics.print(character.mana.. "Press escape to return to the menu")
 		local i, o
 		for i, o in ipairs(bullets) do
 			love.graphics.circle('fill', o.bx, o.by, 2, 8)
+		end
+
+		for i in ipairs(enemies) do
+			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
+			love.graphics.print(enemies[i].x.. love.graphics.getWidth())
+			local j 
+
+			for j in ipairs(enemies[i].tiros) do
+				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].x, enemies[i].y)
+			end
+
 		end
 
 		love.graphics.draw(manaBack, quadManaBack, 10, 10)
@@ -178,5 +198,12 @@ function updateBullets(dt)
 		if  (o.by < -20) or (o.by > love.graphics.getHeight() + 20) then
 			table.remove(bullets, i)
 		end
+	end
+end
+function updateEnemies()
+	local i 
+
+	for i in ipairs(enemies) do 
+		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())
 	end
 end

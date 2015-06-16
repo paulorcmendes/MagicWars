@@ -1,8 +1,8 @@
 --##Game Logic
 --#Imports
-local player = require("player")
-local anim8 = require 'anim8'
-local ponei = require 'ponei'
+local player = require("Prefabs/player")
+local anim8 = require ("Lib/anim8")
+local ponei = require ("Prefabs/ponei")
 local enemies = {}
 local largura
 local altura 
@@ -27,14 +27,14 @@ function carregaGame()
 	esmaecerTela = false
 	apertou = false
 	esmaece = false
-	musica = love.audio.newSource("sound.mp3")
+	musica = love.audio.newSource("Sounds/sound.mp3")
 	musica:setVolume(0.25)
-	especial = love.audio.newSource("especial.mp3")
+	especial = love.audio.newSource("Sounds/especial.mp3")
 	especial:setVolume(5)
-	floor = love.graphics.newImage("floor.png")
+	floor = love.graphics.newImage("Sprites/floor.png")
 	floor:setWrap( "repeat", "repeat" )
 	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
-	backGround = love.graphics.newImage("background.png")
+	backGround = love.graphics.newImage("Sprites/background.png")
 	backGround:setWrap( "repeat", "repeat" )
 	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)
 
@@ -187,7 +187,11 @@ function updateEnemies(dt)
 		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y)
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
+			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura -50) then
+				table.remove(enemies[i].tiros, j)
+			end
 		end
+
 	end
 	for i in ipairs(player.bullets) do
 		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt

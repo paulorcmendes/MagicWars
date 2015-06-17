@@ -7,6 +7,7 @@ local enemies = {}
 local largura
 local altura 
 enemies[1] = ponei
+
 e.x = 50
 e.y = 50
 --#Variables
@@ -109,11 +110,14 @@ function love.update(dt)
    			end
 
    		end
+   		
    		updateEnemies(dt)
    		quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
    		if character.mana>100 then 
    			character.mana = 100
    		end
+
+   		
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
@@ -139,12 +143,12 @@ function love.draw(dt)
 		--love.graphics.print(character.mana.. "Press escape to return to the menu")
 		local i
 		for i in ipairs(player.bullets) do
-			love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 2, 8)
+			love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
 		end
 
 		for i in ipairs(enemies) do
 			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
-			love.graphics.print(enemies[i].x.. love.graphics.getWidth())
+			love.graphics.print(enemies[i].hp)
 			local j 
 
 			for j in ipairs(enemies[i].tiros) do
@@ -170,7 +174,7 @@ end
 
 function podeAtirar()
 	local tempo
-	if os.clock()-ultimoTiro<tempoDeTiro then
+	if (os.clock()-ultimoTiro)<tempoDeTiro then
 		tempo = false
 	else
 	    tempo = true
@@ -178,23 +182,48 @@ function podeAtirar()
 	return tempo and character.mana>=2
 end
 
+function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
+  return x1 < x2+w2 and
+         x2 < x1+w1 and
+         y1 < y2+h2 and
+         y2 < y1+h1
+end
 
 function updateEnemies(dt)
 	local i 
 	local j
 	for i in ipairs(enemies) do 
+		if enemies[i].hp <= 0 then
+			table.remove(enemies, i)
+		end
+		
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())
 		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y)
+		
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
-			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura -50) then
-				table.remove(enemies[i].tiros, j)
+			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, 47, 48) then
+				gamestate = "over"
+			end
+			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura) then
+			 	table.remove(enemies[i].tiros, j)
+			end
+
+		end
+
+		for j in ipairs(player.bullets) do
+			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].sprite:getWidth(), enemies[i].sprite:getHeight(), player.bullets[j].bx, player.bullets[j].by, 5, 5) then
+				enemies[i].hp = enemies[i].hp - 5
+				player.bullets[j].by = -25
 			end
 		end
+
+		
 
 	end
 	for i in ipairs(player.bullets) do
 		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt
+		
 		if  (player.bullets[i].by < -20) or (player.bullets[i].by > love.graphics.getHeight() + 20) then
 			table.remove(player.bullets, i)
 		end

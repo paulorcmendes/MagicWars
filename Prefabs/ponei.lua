@@ -1,15 +1,15 @@
 e = {}
 local hp = 100
 local tiros = {}
-local campoDeVisao = 15
 local incremento = 2
 local tempoDeTiro = 0.2
 local ultimoTiro = os.clock()-tempoDeTiro
-local x = 0
-local y = 0
+local x = 50
+local y = 50
 
 --local ultimoTiro = os.clock()-tempoDeTiro
 function zera()
+	campoDeVisao = invokeEnemy():getWidth()
 	e.x = x
 	e.y = y
 	e.hp = hp
@@ -42,7 +42,7 @@ function ataca(playerX, playerY, enemyX, enemyY)
 
 			table.insert(tiros, {
 				tSprite = shoot,
-				tx = enemyX+shoot:getWidth()/2,
+				tx = enemyX+invokeEnemy():getWidth()/2,
 				ty = enemyY,
 				tspeed = 10
 			})

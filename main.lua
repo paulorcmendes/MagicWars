@@ -4,12 +4,11 @@ local player = require("Prefabs/player")
 local anim8 = require ("Lib/anim8")
 local ponei = require ("Prefabs/ponei")
 local enemies = {}
+local apertou
 local largura
 local altura 
 enemies[1] = ponei
 
-e.x = 50
-e.y = 50
 --#Variables
 local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
 
@@ -29,7 +28,7 @@ function carregaGame()
 	apertou = false
 	esmaece = false
 	musica = love.audio.newSource("Sounds/sound.mp3")
-	musica:setVolume(0.25)
+	musica:setVolume(0.75)
 	especial = love.audio.newSource("Sounds/especial.mp3")
 	especial:setVolume(5)
 	floor = love.graphics.newImage("Sprites/floor.png")
@@ -84,10 +83,14 @@ function love.update(dt)
    		if character.x>largura-47 then character.x = largura-47 end
    		if apertou then 
    			
-   			if os.clock()-comecoEsmaece>3.5 then 
+   			if os.clock()-comecoEsmaece>1.5 then 
+   				for i in ipairs(enemies) do
+   					enemies[i].hp = enemies[i].hp-50
+   				end
    				esmaece = true
    				comecoEsmaece = os.clock()
-   				nComeco = comecoEsmaece   				
+   				nComeco = comecoEsmaece   	
+   				apertou = false			
    			end
    		end
    		if esmaece then
@@ -101,9 +104,9 @@ function love.update(dt)
    				if tAtual-nComeco>0.04 then
    					nComeco = tAtual
    				end
-   				musica:setVolume(0.15)
+   				musica:setVolume(0.40)
    			else
-   				musica:setVolume(0.25)
+   				musica:setVolume(0.75)
    			    apertou = false
    			    esmaece = false
    			    esmaecerTela = false
@@ -153,7 +156,7 @@ function love.draw(dt)
 		for i in ipairs(enemies) do
 			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
 			love.graphics.setColor(255, 0, 0)
-			love.graphics.rectangle("fill", enemies[i].x, enemies[i].y+enemies[i].sprite:getHeight(), enemies[i].sprite:getWidth()/100*enemies[i].hp, 10)
+			love.graphics.rectangle("fill", enemies[i].x, enemies[i].y+enemies[i].sprite:getHeight()+10, enemies[i].sprite:getWidth()/100*enemies[i].hp, 10)
 			love.graphics.setColor(255, 255, 255)
 			local j 
 			for j in ipairs(enemies[i].tiros) do

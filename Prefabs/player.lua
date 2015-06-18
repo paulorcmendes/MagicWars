@@ -2,16 +2,17 @@
 local anim8 = require ("Lib/anim8")
 local saveFile = require ("Lib/saveFile")
 local M = {}
-local nomeArquivo = "character.sav"
+local nomeArquivo = "player.sav"
 local defaultMana = 100
 local defaultRobe = 1
 local character ={}
+local defaultPontos = 0
 local defaultSpeed = 300
 local bullets = {}
 
 
 function savePlayer()
-	success = love.filesystem.write(nomeArquivo , saveFile.tableShow(character, "loadedCharacter"))
+	success = love.filesystem.write(nomeArquivo , saveFile.tableShow(character, "loadedPlayer"))
 end
 function shoot()
 	character.mana = character.mana-2
@@ -21,24 +22,29 @@ function shoot()
 			bspeed = 400
 	})
 end
-function getSavedCharacter()
+function atualizaBestScore()
 	existeArquivo = love.filesystem.exists(nomeArquivo)
 
 	if existeArquivo then 
 		chunk = love.filesystem.load(nomeArquivo)	
-		chunk()
+		chunk()		
+	else			
 		savePlayer()
-	else		
-		
-		savePlayer()
-		--getSavedCharacter()
+		atualizaBestScore()
 	end
 	
-	return loadedCharacter
+	if character.pontos>loadedPlayer.pontos then 
+		savePlayer()
+	end 
+	chunk = love.filesystem.load(nomeArquivo)	
+	chunk()	
+	return loadedPlayer.pontos
+
 end
 
 function invokeCharacter()
 	-- character = getSavedCharacter()
+		character.pontos = defaultPontos
 		character.x = 0
 		character.y = 0
 		character.mana = defaultMana  
@@ -57,7 +63,7 @@ end
 
 
 
-
+M.atualizaBestScore = atualizaBestScore
 M.bullets = bullets
 M.invokeCharacter = invokeCharacter
 M.shoot = shoot

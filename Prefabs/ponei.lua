@@ -1,7 +1,7 @@
 e = {}
 local hp = 100
 local tiros = {}
-local incremento = 2
+local incremento = 5
 local tempoDeTiro = 0.2
 local ultimoTiro = os.clock()-tempoDeTiro
 local x = 50
@@ -13,6 +13,7 @@ function zera()
 	e.x = x
 	e.y = y
 	e.hp = hp
+	tiros = {}
 	e.tiros = tiros
 end
 function move(telaX, telaY)	

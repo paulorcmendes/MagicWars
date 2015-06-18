@@ -7,7 +7,7 @@ local enemies = {}
 local apertou
 local largura
 local altura 
-enemies[1] = ponei
+
 
 --#Variables
 local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
@@ -17,6 +17,9 @@ function  love.load()
 	gamestate = "menu"	
 end
 function carregaGame()	
+	enemies = {}
+	ponei.zera()
+	enemies[1] = ponei
 	character = player.invokeCharacter()
 	largura = love.graphics.getWidth()
 	altura = love.graphics.getHeight()
@@ -128,6 +131,13 @@ function love.update(dt)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
+		if love.keyboard.isDown("m") then
+			love.load()			
+		end
+		if love.keyboard.isDown("r") then
+			carregaGame()
+			gamestate = "onPlay"			
+		end
 		
 	elseif gamestate == "credits" then
 
@@ -147,7 +157,7 @@ function love.draw(dt)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 
 		character.anim:draw(character.image, character.x, altura - 80)		
-		--love.graphics.print(character.mana.. "Press escape to return to the menu")
+		love.graphics.print("Score: "..character.pontos)
 		local i
 		for i in ipairs(player.bullets) do
 			love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
@@ -173,7 +183,11 @@ function love.draw(dt)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
-
+		musica:pause()
+		love.graphics.print("Score: "..character.pontos)
+		love.graphics.print("Best Score: "..player.atualizaBestScore(), 0, 15)
+		love.graphics.print("M - Menu", 0, 30)
+		love.graphics.print("R - Try Again", 0, 45)
 	elseif gamestate == "credits" then
 
 	end
@@ -214,10 +228,12 @@ function updateEnemies(dt)
 		for j in ipairs(player.bullets) do
 			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].sprite:getWidth(), enemies[i].sprite:getHeight(), player.bullets[j].bx, player.bullets[j].by, 5, 5) then
 				enemies[i].hp = enemies[i].hp - 5
+				character.pontos = character.pontos+5
 				player.bullets[j].by = -25
 			end
 		end
 		if enemies[i].hp <= 0 then
+			character.pontos = character.pontos+50
 			table.remove(enemies, i)
 		end	
 	end

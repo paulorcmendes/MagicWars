@@ -7,6 +7,8 @@ local enemies = {}
 local apertou
 local largura
 local altura 
+local tempoDeJogo
+local tempoDePausa = 0
 
 
 --#Variables
@@ -59,9 +61,12 @@ function love.update(dt)
 			gamestate = "onPlay"			
 		end
 	elseif gamestate == "onPlay" then
+		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
 		character.anim:update(dt)
+   		updateEnemies(dt)
+
 		if love.keyboard.isDown("right") then
       		character.x = character.x + (character.speed * dt)
    		end  
@@ -74,9 +79,11 @@ function love.update(dt)
    		end
    		if love.keyboard.isDown("d") and character.mana>=75 then
    			character.mana = character.mana-75
-   			love.audio.play(especial)
    			comecoEsmaece = os.clock()
    			apertou = true
+   		end
+   		if love.keyboard.isDown("p") then
+   			gamestate = "onPause"
    		end
    		if love.keyboard.isDown("escape") then
    			love.audio.stop()
@@ -85,8 +92,9 @@ function love.update(dt)
    		if character.x<0 then character.x=0 end  
    		if character.x>largura-47 then character.x = largura-47 end
    		if apertou then 
-   			
+   			love.audio.play(especial)
    			if os.clock()-comecoEsmaece>1.5 then 
+
    				for i in ipairs(enemies) do
    					enemies[i].hp = enemies[i].hp-50
    				end
@@ -97,6 +105,8 @@ function love.update(dt)
    			end
    		end
    		if esmaece then
+   			love.audio.play(especial)
+
    			tAtual = os.clock()
    			if tAtual-comecoEsmaece<=1 then
    				if tAtual-nComeco<=0.02 then 
@@ -117,7 +127,6 @@ function love.update(dt)
 
    		end
    		
-   		updateEnemies(dt)
    		quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
    		if character.mana>100 then 
    			character.mana = 100
@@ -129,8 +138,17 @@ function love.update(dt)
    		end
    		
 	elseif gamestate == "onPause" then
+		musica:pause()
+		especial:pause()
+		tempoDePausa = os.clock()-tempoDeJogo
+		if love.keyboard.isDown("p") then
+   			gamestate = "onPlay"
+   		end
 
 	elseif gamestate == "over" then
+		musica:pause()
+		especial:pause()
+		
 		if love.keyboard.isDown("m") then
 			love.load()			
 		end
@@ -152,7 +170,7 @@ function love.draw(dt)
 	elseif gamestate == "menu" then
 		love.graphics.print("Press space to start the best game of the world")
 
-	elseif gamestate == "onPlay" then
+	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		love.graphics.draw(backGround, quadBack, 0, 0)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 
@@ -174,8 +192,8 @@ function love.draw(dt)
 			end
 		end
 
-		love.graphics.draw(manaBack, quadManaBack, 10, 10)
-		love.graphics.draw(manaBar, 7.5, 7.5)
+		love.graphics.draw(manaBack, quadManaBack, 10, 15)
+		love.graphics.draw(manaBar, 7.5, 12.5)
 		if esmaecerTela then 
 			love.graphics.setColor(250, 250, 250)
 			love.graphics.rectangle("fill", 0, 0, largura, altura)
@@ -183,7 +201,6 @@ function love.draw(dt)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
-		musica:pause()
 		love.graphics.print("Score: "..character.pontos)
 		love.graphics.print("Best Score: "..player.atualizaBestScore(), 0, 15)
 		love.graphics.print("M - Menu", 0, 30)
@@ -214,7 +231,7 @@ function updateEnemies(dt)
 	local i 
 	local j
 	for i in ipairs(enemies) do 			
-		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y)
+		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y, tempoDeJogo)
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed

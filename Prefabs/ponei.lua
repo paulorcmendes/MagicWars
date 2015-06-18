@@ -7,9 +7,9 @@ local ultimoTiro = os.clock()-tempoDeTiro
 local x = 50
 local y = 50
 
---local ultimoTiro = os.clock()-tempoDeTiro
 function zera()
 	campoDeVisao = invokeEnemy():getWidth()
+
 	e.x = x
 	e.y = y
 	e.hp = hp
@@ -28,17 +28,17 @@ function move(telaX, telaY)
 	e.x = e.x+incremento
 end
 
-function ataca(playerX, playerY, enemyX, enemyY)
+function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 	
 	local tempo
-	if (os.clock()-ultimoTiro)<tempoDeTiro then
+	if (tempoDeJogo-ultimoTiro)<tempoDeTiro then
 		tempo = false
 	else
 	    tempo = true
 	end	
 	if  tempo then
 		if (playerX - campoDeVisao < enemyX and enemyX < playerX + campoDeVisao) then
-			ultimoTiro = os.clock()
+			ultimoTiro = tempoDeJogo
 			shoot = love.graphics.newImage("Sprites/bolaArcoiris.png")
 
 			table.insert(tiros, {

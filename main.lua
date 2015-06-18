@@ -58,7 +58,7 @@ function love.update(dt)
 		end
 	elseif gamestate == "onPlay" then
 		character.mana=character.mana+0.03
-		love.audio.play(musica)
+		musica:play()
 		character.anim:update(dt)
 		if love.keyboard.isDown("right") then
       		character.x = character.x + (character.speed * dt)
@@ -121,7 +121,7 @@ function love.update(dt)
 	elseif gamestate == "onPause" then
 
 	elseif gamestate == "over" then
-
+		
 	elseif gamestate == "credits" then
 
 	end
@@ -147,6 +147,7 @@ function love.draw(dt)
 		end
 
 		for i in ipairs(enemies) do
+
 			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
 			love.graphics.print(enemies[i].hp)
 			local j 
@@ -192,14 +193,9 @@ end
 function updateEnemies(dt)
 	local i 
 	local j
-	for i in ipairs(enemies) do 
-		if enemies[i].hp <= 0 then
-			table.remove(enemies, i)
-		end
-		
-		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())
+	for i in ipairs(enemies) do 			
 		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y)
-		
+		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
 			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, 47, 48) then
@@ -208,22 +204,19 @@ function updateEnemies(dt)
 			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura) then
 			 	table.remove(enemies[i].tiros, j)
 			end
-
 		end
-
 		for j in ipairs(player.bullets) do
 			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].sprite:getWidth(), enemies[i].sprite:getHeight(), player.bullets[j].bx, player.bullets[j].by, 5, 5) then
 				enemies[i].hp = enemies[i].hp - 5
 				player.bullets[j].by = -25
 			end
 		end
-
-		
-
+		if enemies[i].hp <= 0 then
+			table.remove(enemies, i)
+		end	
 	end
 	for i in ipairs(player.bullets) do
-		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt
-		
+		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt		
 		if  (player.bullets[i].by < -20) or (player.bullets[i].by > love.graphics.getHeight() + 20) then
 			table.remove(player.bullets, i)
 		end

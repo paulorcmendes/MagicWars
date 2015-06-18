@@ -1,9 +1,11 @@
 e = {}
-local hp = 1000000000
+local hp = 100
 local tiros = {}
 local campoDeVisao = 30000000
 local incremento = 2
-local tempoDeTiro = 2
+local tempoDeTiro = 0.2
+local ultimoTiro = os.clock()-tempoDeTiro
+
 --local ultimoTiro = os.clock()-tempoDeTiro
 
 function move(telaX, telaY)	
@@ -19,7 +21,7 @@ function move(telaX, telaY)
 end
 
 function ataca(playerX, playerY, enemyX, enemyY)
-	e.hp = e.hp - 1
+	
 	local tempo
 	if (os.clock()-ultimoTiro)<tempoDeTiro then
 		tempo = false

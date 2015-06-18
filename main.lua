@@ -116,7 +116,11 @@ function love.update(dt)
    		if character.mana>100 then 
    			character.mana = 100
    		end
-
+   		if #enemies==0 then 
+   			ponei = require ("Prefabs/ponei")
+   			ponei.zera()
+   			table.insert(enemies, ponei)			
+   		end
    		
 	elseif gamestate == "onPause" then
 
@@ -147,15 +151,12 @@ function love.draw(dt)
 		end
 
 		for i in ipairs(enemies) do
-
 			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
 			love.graphics.print(enemies[i].hp)
 			local j 
-
 			for j in ipairs(enemies[i].tiros) do
 				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].tiros[j].tx, enemies[i].tiros[j].ty)
 			end
-
 		end
 
 		love.graphics.draw(manaBack, quadManaBack, 10, 10)

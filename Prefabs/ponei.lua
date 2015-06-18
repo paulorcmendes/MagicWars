@@ -1,13 +1,20 @@
 e = {}
 local hp = 100
 local tiros = {}
-local campoDeVisao = 30000000
+local campoDeVisao = 15
 local incremento = 2
 local tempoDeTiro = 0.2
 local ultimoTiro = os.clock()-tempoDeTiro
+local x = 0
+local y = 0
 
 --local ultimoTiro = os.clock()-tempoDeTiro
-
+function zera()
+	e.x = x
+	e.y = y
+	e.hp = hp
+	e.tiros = tiros
+end
 function move(telaX, telaY)	
 
 	if e.x>  telaX-e.sprite:getWidth()  then 
@@ -35,7 +42,7 @@ function ataca(playerX, playerY, enemyX, enemyY)
 
 			table.insert(tiros, {
 				tSprite = shoot,
-				tx = enemyX,
+				tx = enemyX+shoot:getWidth()/2,
 				ty = enemyY,
 				tspeed = 10
 			})
@@ -50,11 +57,8 @@ function invokeEnemy()
 end
 
 
-e.x = 0
-e.y = 0
-
-e.hp = hp
-e.tiros = tiros
+e.zera = zera
+e.zera()
 e.sprite = invokeEnemy()
 e.move = move
 e.ataca = ataca

@@ -152,7 +152,9 @@ function love.draw(dt)
 
 		for i in ipairs(enemies) do
 			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
-			love.graphics.print(enemies[i].hp)
+			love.graphics.setColor(255, 0, 0)
+			love.graphics.rectangle("fill", enemies[i].x, enemies[i].y+enemies[i].sprite:getHeight(), enemies[i].sprite:getWidth()/100*enemies[i].hp, 10)
+			love.graphics.setColor(255, 255, 255)
 			local j 
 			for j in ipairs(enemies[i].tiros) do
 				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].tiros[j].tx, enemies[i].tiros[j].ty)

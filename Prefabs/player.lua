@@ -9,6 +9,7 @@ local character ={}
 local defaultPontos = 0
 local defaultSpeed = 300
 local bullets = {}
+local magoHead = {}
 local quadBack
 local quadManaBack
 local manaBack
@@ -20,9 +21,12 @@ function draw(altura)
 		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
 	end
 	love.graphics.print("Score: "..character.pontos)
-   	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
-	love.graphics.draw(manaBack, quadManaBack, 10, 15)
-	love.graphics.draw(manaBar, 7.5, 12.5)
+   	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/3, manaBack:getWidth(), manaBack:getHeight()/3)
+	love.graphics.draw(manaBack, quadManaBack, 65, 45)
+	love.graphics.draw(manaBar, 5.5, 4.5)
+	magoHead.anim:draw(magoHead.image, 10, -8)	
+
+	
 
 end
 function savePlayer()
@@ -71,6 +75,10 @@ function load(largura, altura)
 	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
 	manaBar = love.graphics.newImage("Sprites/manaBar.png")
 
+	magoHead.image = love.graphics.newImage("Sprites/magoHead.png")
+	local g = anim8.newGrid(45, 100, magoHead.image:getWidth(), magoHead.image:getHeight())
+	magoHead.anim = anim8.newAnimation(g('1-6', 1), 0.2)
+
 	character.x = ((largura-character.largura)/2)  
 	character.y = altura-character.altura-20
 	
@@ -91,5 +99,6 @@ player.atualizaBestScore = atualizaBestScore
 player.load = load
 player.shoot = shoot
 player.draw = draw
+player.magoHead = magoHead
 
 return player

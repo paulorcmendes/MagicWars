@@ -52,6 +52,7 @@ function love.update(dt)
 			gamestate = "onPlay"			
 		end
 	elseif gamestate == "onPlay" then
+		player.magoHead.anim:update(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
@@ -211,7 +212,8 @@ end
 function updateEnemies(dt)
 	local i 
 	local j
-	for i in ipairs(enemies) do 			
+	for i in ipairs(enemies) do
+
 		enemies[i].anim:update(dt)
 		enemies[i].ataca(character.x+character.largura/2, character.y, enemies[i].x, enemies[i].y, tempoDeJogo)
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		

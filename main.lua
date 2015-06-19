@@ -52,19 +52,23 @@ function love.update(dt)
 			gamestate = "onPlay"			
 		end
 	elseif gamestate == "onPlay" then
+		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
    		updateEnemies(dt)
+      	--player.onMove = false
+
 
 		if love.keyboard.isDown("right") then
-			character.anim:update(dt)
       		character.x = character.x + (character.speed * dt)
+      		--player.onMove = true
    		end  
    		if love.keyboard.isDown("left") then
-			character.anim:update(dt)
       		character.x = character.x - (character.speed * dt)
+      		--player.onMove = true
+
    		end 
    		if love.keyboard.isDown("a") and podeAtirar() then 
    			ultimoTiro = os.clock()   			

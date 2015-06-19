@@ -15,7 +15,9 @@ local quadManaBack
 local manaBack
 local manaBar
 local backGround
+
 function draw(altura)
+
 	character.anim:draw(character.image, character.x, character.y)	
 	for i in ipairs(player.bullets) do
 		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
@@ -63,8 +65,8 @@ end
 
 function load(largura, altura)
 	-- character = getSavedCharacter()
-	character.largura = 60
-	character.altura = 100
+	character.largura = 110
+	character.altura = 150
 	character.pontos = defaultPontos	
 	character.mana = defaultMana  
 	character.speed = defaultSpeed 
@@ -89,12 +91,13 @@ function load(largura, altura)
 	image = love.graphics.newImage(nomeImagem)
 	local g = anim8.newGrid(character.largura, character.altura, image:getWidth(), image:getHeight())
 	character.image = image
-	character.anim = anim8.newAnimation(g('1-3',1), 0.1)	
+	character.anim = anim8.newAnimation(g('1-4',1), 0.1)
+		
 	return character
 end
 
 
-
+player.onMove = onMove
 player.atualizaBestScore = atualizaBestScore
 player.load = load
 player.shoot = shoot

@@ -5,8 +5,8 @@ local anim8 = require ("Lib/anim8")
 local ponei = require ("Prefabs/ponei")
 local enemies = {}
 local apertou
-local largura
-local altura 
+local largura = love.graphics.getWidth()
+local altura = love.graphics.getHeight()
 local tempoDeJogo
 local tempoDePausa = 0
 
@@ -19,15 +19,16 @@ function  love.load()
 	gamestate = "menu"	
 end
 function carregaGame()	
+
 	enemies = {}
 	ponei.zera()
 	enemies[1] = ponei
-	character = player.invokeCharacter()
+	character = player.invokeCharacter(largura, altura)
 	largura = love.graphics.getWidth()
 	altura = love.graphics.getHeight()
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
-	character.x = ((largura-47)/2)  
+	character.x = ((largura-character.largura)/2)  
 	character.y = altura	
 	esmaecerTela = false
 	apertou = false
@@ -90,7 +91,7 @@ function love.update(dt)
    			love.load()
    		end
    		if character.x<0 then character.x=0 end  
-   		if character.x>largura-47 then character.x = largura-47 end
+   		if character.x>largura-character.largura then character.x = largura-character.largura end
    		if apertou then 
    			love.audio.play(especial)
    			if os.clock()-comecoEsmaece>1.5 then 
@@ -173,23 +174,12 @@ function love.draw(dt)
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		love.graphics.draw(backGround, quadBack, 0, 0)
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
-
-		character.anim:draw(character.image, character.x, altura - 80)		
-		love.graphics.print("Score: "..character.pontos)
-		local i
-		for i in ipairs(player.bullets) do
-			love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
-		end
+		player.draw(altura)
+		
+		local i	
 
 		for i in ipairs(enemies) do
-			love.graphics.draw(enemies[i].sprite, enemies[i].x, enemies[i].y)
-			love.graphics.setColor(255, 0, 0)
-			love.graphics.rectangle("fill", enemies[i].x, enemies[i].y+enemies[i].sprite:getHeight()+10, enemies[i].sprite:getWidth()/100*enemies[i].hp, 10)
-			love.graphics.setColor(255, 255, 255)
-			local j 
-			for j in ipairs(enemies[i].tiros) do
-				love.graphics.draw(enemies[i].tiros[j].tSprite, enemies[i].tiros[j].tx, enemies[i].tiros[j].ty)
-			end
+			enemies[i].draw()
 		end
 
 		love.graphics.draw(manaBack, quadManaBack, 10, 15)
@@ -198,8 +188,10 @@ function love.draw(dt)
 			love.graphics.setColor(250, 250, 250)
 			love.graphics.rectangle("fill", 0, 0, largura, altura)
 		end
-	elseif gamestate == "onPause" then
-
+		if gamestate == "onPause" then
+			local image = love.graphics.newImage("Sprites/paused.png")
+			love.graphics.draw(image, (largura-image:getWidth())/2, (altura-image:getHeight())/2)
+		end
 	elseif gamestate == "over" then
 		love.graphics.print("Score: "..character.pontos)
 		love.graphics.print("Best Score: "..player.atualizaBestScore(), 0, 15)
@@ -235,7 +227,7 @@ function updateEnemies(dt)
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
-			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, 47, 48) then
+			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, character.largura, character.altura) then
 				gamestate = "over"
 			end
 			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura) then

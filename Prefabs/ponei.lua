@@ -45,12 +45,21 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 				tSprite = shoot,
 				tx = enemyX+invokeEnemy():getWidth()/2,
 				ty = enemyY,
-				tspeed = 10
+				tspeed = 16
 			})
 		end
 	end
 end
-
+function draw()
+	love.graphics.draw(e.sprite, e.x, e.y)
+	love.graphics.setColor(255, 0, 0)
+	love.graphics.rectangle("fill", e.x, e.y+e.sprite:getHeight()+10, e.sprite:getWidth()/100*e.hp, 10)
+	love.graphics.setColor(255, 255, 255)
+	local j 
+	for j in ipairs(e.tiros) do
+		love.graphics.draw(e.tiros[j].tSprite, e.tiros[j].tx, e.tiros[j].ty)
+	end
+end
 
 function invokeEnemy()
 	sprite = love.graphics.newImage("Sprites/enemy.png")
@@ -63,5 +72,6 @@ e.zera()
 e.sprite = invokeEnemy()
 e.move = move
 e.ataca = ataca
+e.draw = draw
 
 return e

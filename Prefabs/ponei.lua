@@ -8,7 +8,7 @@ local x = 50
 local y = 50
 
 function zera()
-	campoDeVisao = invokeEnemy():getWidth()
+	campoDeVisao = invokeEnemy():getWidth()/2
 
 	e.x = x
 	e.y = y

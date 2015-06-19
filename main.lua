@@ -7,6 +7,7 @@ local enemies = {}
 local apertou
 local largura = love.graphics.getWidth()
 local altura = love.graphics.getHeight()
+local character = player.load(largura, altura)
 local tempoDeJogo
 local tempoDePausa = 0
 
@@ -23,13 +24,9 @@ function carregaGame()
 	enemies = {}
 	ponei.zera()
 	enemies[1] = ponei
-	character = player.load(largura, altura)
-	largura = love.graphics.getWidth()
-	altura = love.graphics.getHeight()
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
-	character.x = ((largura-character.largura)/2)  
-	character.y = altura	
+	character = player.load(largura, altura)		
 	esmaecerTela = false
 	apertou = false
 	esmaece = false
@@ -214,7 +211,7 @@ function updateEnemies(dt)
 	local i 
 	local j
 	for i in ipairs(enemies) do 			
-		enemies[i].ataca(character.x, character.y, enemies[i].x, enemies[i].y, tempoDeJogo)
+		enemies[i].ataca(character.x+character.largura/2, character.y, enemies[i].x, enemies[i].y, tempoDeJogo)
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed

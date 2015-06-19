@@ -15,7 +15,7 @@ local manaBack
 local manaBar
 local backGround
 function draw(altura)
-	character.anim:draw(character.image, character.x, altura - 80)	
+	character.anim:draw(character.image, character.x, character.y)	
 	for i in ipairs(player.bullets) do
 		love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
 	end
@@ -31,8 +31,8 @@ end
 function shoot()
 	character.mana = character.mana-2
 	table.insert(bullets, {
-			bx = character.x+character.largura/2,
-			by = character.y-50,
+			bx = character.x+character.largura,
+			by = character.y,
 			bspeed = 600
 	})
 end
@@ -56,15 +56,11 @@ function atualizaBestScore()
 
 end
 
-function load(altura, largura)
+function load(largura, altura)
 	-- character = getSavedCharacter()
-	character.largura = 47
-	character.altura = 48
-	character.x = ((largura-character.largura)/2)  
-	character.y = altura
-	character.pontos = defaultPontos
-	character.x = 0
-	character.y = 0
+	character.largura = 60
+	character.altura = 100
+	character.pontos = defaultPontos	
 	character.mana = defaultMana  
 	character.speed = defaultSpeed 
 	bullets = {}
@@ -74,16 +70,17 @@ function load(altura, largura)
 	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
 	manaBar = love.graphics.newImage("Sprites/manaBar.png")
 
+	character.x = ((largura-character.largura)/2)  
+	character.y = altura-character.altura-20
 	
 	if defaultRobe == 1 then
-		nomeImagem = "Sprites/white.png"
+		nomeImagem = "Sprites/mago.png"
 	end
 
 	image = love.graphics.newImage(nomeImagem)
 	local g = anim8.newGrid(character.largura, character.altura, image:getWidth(), image:getHeight())
 	character.image = image
-	character.anim = anim8.newAnimation(g('4-6',1), 0.1)
-	
+	character.anim = anim8.newAnimation(g('1-3',1), 0.1)	
 	return character
 end
 

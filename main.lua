@@ -55,13 +55,14 @@ function love.update(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
-		character.anim:update(dt)
    		updateEnemies(dt)
 
 		if love.keyboard.isDown("right") then
+			character.anim:update(dt)
       		character.x = character.x + (character.speed * dt)
    		end  
    		if love.keyboard.isDown("left") then
+			character.anim:update(dt)
       		character.x = character.x - (character.speed * dt)
    		end 
    		if love.keyboard.isDown("a") and podeAtirar() then 
@@ -224,7 +225,7 @@ function updateEnemies(dt)
 			end
 		end
 		for j in ipairs(player.bullets) do
-			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].largura, enemies[i].altura, player.bullets[j].bx, player.bullets[j].by, 5, 5) then
+			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].largura, enemies[i].altura, player.bullets[j].bx, player.bullets[j].by, player.bullets[j].bimage:getWidth(), player.bullets[j].bimage:getHeight())  then
 				enemies[i].hp = enemies[i].hp - 5
 				character.pontos = character.pontos+5
 				player.bullets[j].by = -25

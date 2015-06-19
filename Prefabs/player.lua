@@ -17,7 +17,7 @@ local backGround
 function draw(altura)
 	character.anim:draw(character.image, character.x, character.y)	
 	for i in ipairs(player.bullets) do
-		love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
+		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
 	end
 	love.graphics.print("Score: "..character.pontos)
    	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
@@ -31,6 +31,7 @@ end
 function shoot()
 	character.mana = character.mana-2
 	table.insert(bullets, {
+			bimage = love.graphics.newImage("Sprites/bullet.png"),
 			bx = character.x+character.largura,
 			by = character.y,
 			bspeed = 600

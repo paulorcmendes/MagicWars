@@ -6,11 +6,12 @@ local incremento = 5
 local tempoDeTiro = 0.2
 local ultimoTiro = os.clock()-tempoDeTiro
 local x = 50
-local y = 50
+local y = -100
 local largura = 100
 local altura = 101
 
 function zera()
+	incremento = 5
 	e.altura = altura
 	e.largura = largura
 	campoDeVisao = e.largura/2
@@ -24,15 +25,18 @@ function zera()
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
 function move(telaX, telaY)	
+	if e.y<50 then 
+		e.y = e.y + incremento
+	else
+		if e.x>  telaX-e.largura  then 
 
-	if e.x>  telaX-e.largura  then 
-
-		incremento = incremento*-1
+			incremento = incremento*-1
+		end
+		if e.x<0 then
+			incremento = incremento*-1
+		end
+		e.x = e.x+incremento
 	end
-	if e.x<0 then
-		incremento = incremento*-1
-	end
-	e.x = e.x+incremento
 end
 
 function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
@@ -44,7 +48,7 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 	    tempo = true
 	end	
 	if  tempo then
-		if (playerX - campoDeVisao < enemyX and enemyX < playerX + campoDeVisao) then
+		if (playerX - campoDeVisao < enemyX and enemyX < playerX + campoDeVisao and e.y>=50) then
 			ultimoTiro = tempoDeJogo
 			shoot = love.graphics.newImage("Sprites/bolaArcoiris.png")
 
@@ -52,7 +56,7 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 				tSprite = shoot,
 				tx = enemyX+e.largura/2,
 				ty = enemyY,
-				tspeed = 16
+				tspeed = 10
 			})
 		end
 	end

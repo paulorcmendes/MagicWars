@@ -211,6 +211,7 @@ function updateEnemies(dt)
 	local i 
 	local j
 	for i in ipairs(enemies) do 			
+		enemies[i].anim:update(dt)
 		enemies[i].ataca(character.x+character.largura/2, character.y, enemies[i].x, enemies[i].y, tempoDeJogo)
 		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
 		for j in ipairs(enemies[i].tiros) do
@@ -223,7 +224,7 @@ function updateEnemies(dt)
 			end
 		end
 		for j in ipairs(player.bullets) do
-			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].sprite:getWidth(), enemies[i].sprite:getHeight(), player.bullets[j].bx, player.bullets[j].by, 5, 5) then
+			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].largura, enemies[i].altura, player.bullets[j].bx, player.bullets[j].by, 5, 5) then
 				enemies[i].hp = enemies[i].hp - 5
 				character.pontos = character.pontos+5
 				player.bullets[j].by = -25

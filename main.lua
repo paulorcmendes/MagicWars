@@ -23,7 +23,7 @@ function carregaGame()
 	enemies = {}
 	ponei.zera()
 	enemies[1] = ponei
-	character = player.invokeCharacter(largura, altura)
+	character = player.load(largura, altura)
 	largura = love.graphics.getWidth()
 	altura = love.graphics.getHeight()
 	tempoDeTiro = 0.2
@@ -42,14 +42,7 @@ function carregaGame()
 	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
 	backGround = love.graphics.newImage("Sprites/background.png")
 	backGround:setWrap( "repeat", "repeat" )
-	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)
-
-	manaBack = love.graphics.newImage("Sprites/manaBack.png")
-	manaBack:setWrap( "repeat", "repeat" )
-	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
-
-	manaBar = love.graphics.newImage("Sprites/manaBar.png")
-	
+	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)		
 end
 --#On every frame
 function love.update(dt)
@@ -128,7 +121,6 @@ function love.update(dt)
 
    		end
    		
-   		quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
    		if character.mana>100 then 
    			character.mana = 100
    		end
@@ -172,7 +164,7 @@ function love.draw(dt)
 		love.graphics.print("Press space to start the best game of the world")
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
-		love.graphics.draw(backGround, quadBack, 0, 0)
+		love.graphics.draw(backGround, quadBack, 0, 0)		
 		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 		player.draw(altura)
 		
@@ -182,8 +174,7 @@ function love.draw(dt)
 			enemies[i].draw()
 		end
 
-		love.graphics.draw(manaBack, quadManaBack, 10, 15)
-		love.graphics.draw(manaBar, 7.5, 12.5)
+		
 		if esmaecerTela then 
 			love.graphics.setColor(250, 250, 250)
 			love.graphics.rectangle("fill", 0, 0, largura, altura)

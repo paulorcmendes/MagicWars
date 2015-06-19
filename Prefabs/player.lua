@@ -9,13 +9,20 @@ local character ={}
 local defaultPontos = 0
 local defaultSpeed = 300
 local bullets = {}
-
+local quadBack
+local quadManaBack
+local manaBack
+local manaBar
+local backGround
 function draw(altura)
 	character.anim:draw(character.image, character.x, altura - 80)	
 	for i in ipairs(player.bullets) do
 		love.graphics.circle('fill', player.bullets[i].bx, player.bullets[i].by, 5, 5)
 	end
 	love.graphics.print("Score: "..character.pontos)
+   	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
+	love.graphics.draw(manaBack, quadManaBack, 10, 15)
+	love.graphics.draw(manaBar, 7.5, 12.5)
 
 end
 function savePlayer()
@@ -24,7 +31,7 @@ end
 function shoot()
 	character.mana = character.mana-2
 	table.insert(bullets, {
-			bx = character.x+47/2,
+			bx = character.x+character.largura/2,
 			by = character.y-50,
 			bspeed = 600
 	})
@@ -49,7 +56,7 @@ function atualizaBestScore()
 
 end
 
-function invokeCharacter(altura, largura)
+function load(altura, largura)
 	-- character = getSavedCharacter()
 	character.largura = 47
 	character.altura = 48
@@ -60,6 +67,14 @@ function invokeCharacter(altura, largura)
 	character.y = 0
 	character.mana = defaultMana  
 	character.speed = defaultSpeed 
+	bullets = {}
+	player.bullets = bullets
+	manaBack = love.graphics.newImage("Sprites/manaBack.png")
+	manaBack:setWrap( "repeat", "repeat" )
+	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/2, manaBack:getWidth(), manaBack:getHeight()/2)
+	manaBar = love.graphics.newImage("Sprites/manaBar.png")
+
+	
 	if defaultRobe == 1 then
 		nomeImagem = "Sprites/white.png"
 	end
@@ -75,8 +90,7 @@ end
 
 
 player.atualizaBestScore = atualizaBestScore
-player.bullets = bullets
-player.invokeCharacter = invokeCharacter
+player.load = load
 player.shoot = shoot
 player.draw = draw
 

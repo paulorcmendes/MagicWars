@@ -1,8 +1,9 @@
 --##Game Logic
 --#Imports
+require "menu"
 local player = require("Prefabs/player")
 local anim8 = require ("Lib/anim8")
-local ponei = require ("Prefabs/ponei")
+local enemyOne = require ("Prefabs/enemyOne")
 local enemies = {}
 local apertou
 local largura = love.graphics.getWidth()
@@ -14,18 +15,34 @@ local codigoInimigo
 
 
 --#Variables
-local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
+local gamestate = 0 --[[ intro - menu - onPlay - onPause - over - credits ]]
 
 --#On Start
 function  love.load()
-    love.window.setFullscreen(true)	
-	gamestate = "menu"	
+	if gamestate == 0 then 
+		gamestate = "menu"
+	end
+	if gamestate == "intro" then
+
+	elseif gamestate == "menu" then
+		love.window.setFullscreen(true)	
+		gamestate = "menu"
+		menu_load()	
+		
+	elseif gamestate == "onPlay" or gamestate == "onPause" then
+		carregaGame()
+	elseif gamestate == "over" then
+		
+	elseif gamestate == "credits" then
+
+	end
+   
 end
 function carregaGame()	
 	codigoInimigo = 0
 	enemies = {}
-	ponei.zera(codigoInimigo)
-	enemies[1] = ponei
+	enemyOne.zera(codigoInimigo)
+	enemies[1] = enemyOne
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
 	character = player.load(largura, altura)		
@@ -48,11 +65,10 @@ function love.update(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		
-		if love.keyboard.isDown(" ") then
-			carregaGame()
-			gamestate = "onPlay"			
-		end
+		mousex = love.mouse.getX()
+		mousey = love.mouse.getY()
+		menu_check()
+	
 	elseif gamestate == "onPlay" then
 		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
@@ -86,6 +102,7 @@ function love.update(dt)
    		end
    		if love.keyboard.isDown("escape") then
    			love.audio.stop()
+   			gamestate = "menu"
    			love.load()
    		end
    		if character.x<0 then character.x=0 end  
@@ -136,7 +153,7 @@ function love.update(dt)
 		especial:pause()
 		tempoDePausa = os.clock()-tempoDeJogo
 		if love.keyboard.isDown("p") then
-   			gamestate = "onPlay"
+   			gamestate = "onPlay"   			
    		end
 
 	elseif gamestate == "over" then
@@ -144,11 +161,12 @@ function love.update(dt)
 		especial:pause()
 		
 		if love.keyboard.isDown("m") then
+			gamestate = "menu"
 			love.load()			
 		end
 		if love.keyboard.isDown("r") then
-			carregaGame()
-			gamestate = "onPlay"			
+			gamestate = "onPlay"
+			carregaGame()			
 		end
 		
 	elseif gamestate == "credits" then
@@ -162,7 +180,7 @@ function love.draw(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		love.graphics.print("Press space to start the best game of the world")
+		menu_draw()
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		love.graphics.draw(backGround, quadBack, 0, 0)		
@@ -215,10 +233,10 @@ function updateEnemies(dt)
 	local i 
 	local j
 	if #enemies==0 then 
-   		ponei = require ("Prefabs/ponei")
+   		enemyOne = require ("Prefabs/enemyOne")
    		codigoInimigo = codigoInimigo+1
-   		ponei.zera(codigoInimigo)
-   		table.insert(enemies, ponei)			
+   		enemyOne.zera(codigoInimigo)
+   		table.insert(enemies, enemyOne)			
    	end
 	for i in ipairs(enemies) do
 
@@ -251,5 +269,13 @@ function updateEnemies(dt)
 		if  (player.bullets[i].by < -20) or (player.bullets[i].by > love.graphics.getHeight() + 20) then
 			table.remove(player.bullets, i)
 		end
+	end
+end
+
+
+function love.mousepressed(x,y)
+	if gamestate == "menu" then
+		gamestate = menu_click(x,y)
+		love.load()
 	end
 end

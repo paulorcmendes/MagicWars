@@ -10,6 +10,7 @@ local altura = love.graphics.getHeight()
 local character = player.load(largura, altura)
 local tempoDeJogo
 local tempoDePausa = 0
+local codigoInimigo
 
 
 --#Variables
@@ -17,12 +18,13 @@ local gamestate  --[[ intro - menu - onPlay - onPause - over - credits ]]
 
 --#On Start
 function  love.load()
+    love.window.setFullscreen(true)	
 	gamestate = "menu"	
 end
 function carregaGame()	
-
+	codigoInimigo = 0
 	enemies = {}
-	ponei.zera()
+	ponei.zera(codigoInimigo)
 	enemies[1] = ponei
 	tempoDeTiro = 0.2
 	ultimoTiro = os.clock()-tempoDeTiro	
@@ -37,9 +39,9 @@ function carregaGame()
 	floor = love.graphics.newImage("Sprites/floor.png")
 	floor:setWrap( "repeat", "repeat" )
 	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
-	backGround = love.graphics.newImage("Sprites/background.png")
+	backGround = love.graphics.newImage("Sprites/cemetary.jpg")
 	backGround:setWrap( "repeat", "repeat" )
-	quadBack = love.graphics.newQuad(0, 0, largura, altura, backGround:getWidth()/1.5, backGround:getHeight()/1.5)		
+	quadBack = love.graphics.newQuad(0, 0, largura, altura, largura, altura)		
 end
 --#On every frame
 function love.update(dt)
@@ -127,11 +129,7 @@ function love.update(dt)
    		if character.mana>100 then 
    			character.mana = 100
    		end
-   		if #enemies==0 then 
-   			ponei = require ("Prefabs/ponei")
-   			ponei.zera()
-   			table.insert(enemies, ponei)			
-   		end
+   		
    		
 	elseif gamestate == "onPause" then
 		musica:pause()
@@ -216,6 +214,12 @@ end
 function updateEnemies(dt)
 	local i 
 	local j
+	if #enemies==0 then 
+   		ponei = require ("Prefabs/ponei")
+   		codigoInimigo = codigoInimigo+1
+   		ponei.zera(codigoInimigo)
+   		table.insert(enemies, ponei)			
+   	end
 	for i in ipairs(enemies) do
 
 		enemies[i].anim:update(dt)

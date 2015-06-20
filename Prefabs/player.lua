@@ -22,7 +22,10 @@ function draw(altura)
 	for i in ipairs(player.bullets) do
 		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
 	end
-	love.graphics.print("Score: "..character.pontos)
+	love.graphics.setFont(scoreFont)
+	love.graphics.setColor(0,0,0)
+	love.graphics.print("Score: "..character.pontos, 70, 5)
+	love.graphics.setColor(255,255,255)
    	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/3, manaBack:getWidth(), manaBack:getHeight()/3)
 	love.graphics.draw(manaBack, quadManaBack, 65, 45)
 	love.graphics.draw(manaBar, 5.5, 4.5)
@@ -38,7 +41,7 @@ function shoot()
 	character.mana = character.mana-2
 	table.insert(bullets, {
 			bimage = love.graphics.newImage("Sprites/bullet.png"),
-			bx = character.x+character.largura,
+			bx = character.x+character.largura-22,
 			by = character.y,
 			bspeed = 600
 	})
@@ -65,6 +68,7 @@ end
 
 function load(largura, altura)
 	-- character = getSavedCharacter()
+	scoreFont = love.graphics.setNewFont("score.ttf", 30)
 	character.largura = 110
 	character.altura = 150
 	character.pontos = defaultPontos	

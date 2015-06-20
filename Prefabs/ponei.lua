@@ -10,11 +10,13 @@ local y = -100
 local largura = 100
 local altura = 101
 
-function zera()
-	incremento = 5
+function zera(codigoInimigo)
+
+	incremento = 2+codigoInimigo
 	e.altura = altura
 	e.largura = largura
 	campoDeVisao = e.largura/2
+
 	e.x = x
 	e.y = y
 	e.hp = hp
@@ -54,7 +56,7 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 
 			table.insert(tiros, {
 				tSprite = shoot,
-				tx = enemyX+e.largura/2,
+				tx = enemyX+e.largura/2-shoot:getWidth()/2,
 				ty = enemyY,
 				tspeed = 10
 			})
@@ -78,7 +80,6 @@ end
 
 
 e.zera = zera
-e.zera()
 invokeEnemy()
 e.move = move
 e.ataca = ataca

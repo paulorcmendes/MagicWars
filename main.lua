@@ -2,6 +2,7 @@
 --#Imports
 menu  = require "menu"
 gameOver = require "gameOver"
+credits = require("States/credits")
 local player = require("Prefabs/player")
 local anim8 = require ("Lib/anim8")
 local enemyOne = require ("Prefabs/enemyOne")
@@ -13,6 +14,8 @@ local character = player.load(largura, altura)
 local tempoDeJogo
 local tempoDePausa = 0
 local codigoInimigo
+local backgroundAnim
+local backGround
 
 
 --#Variables
@@ -36,7 +39,7 @@ function  love.load()
 		gameOver.gameOver_load()
 		
 	elseif gamestate == "credits" then
-
+		credits.credits_load()
 	end
    
 end
@@ -55,12 +58,14 @@ function carregaGame()
 	musica:setVolume(0.75)
 	especial = love.audio.newSource("Sounds/especial.mp3")
 	especial:setVolume(5)
-	floor = love.graphics.newImage("Sprites/floor.png")
-	floor:setWrap( "repeat", "repeat" )
-	quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
-	backGround = love.graphics.newImage("Sprites/cemetary.jpg")
-	backGround:setWrap( "repeat", "repeat" )
-	quadBack = love.graphics.newQuad(0, 0, largura, altura, largura, altura)		
+	--floor = love.graphics.newImage("Sprites/floor.png")
+	--floor:setWrap( "repeat", "repeat" )
+	--quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
+	backGround = love.graphics.newImage("Sprites/background.png")
+	local z = anim8.newGrid(1367, 768, backGround:getWidth(), backGround:getHeight())
+	backgroundAnim = anim8.newAnimation(z('1-8', 1), 0.2)
+	--backGround:setWrap( "repeat", "repeat" )
+	--quadBack = love.graphics.newQuad(0, 0, largura, altura, largura, altura)		
 end
 --#On every frame
 function love.update(dt)
@@ -72,6 +77,7 @@ function love.update(dt)
 		menu.menu_check()
 	
 	elseif gamestate == "onPlay" then
+		backgroundAnim:update(dt)
 		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
@@ -167,7 +173,9 @@ function love.update(dt)
 		gameOver.gameOver_check()
 		
 	elseif gamestate == "credits" then
-
+		mousex = love.mouse.getX()
+		mousey = love.mouse.getY()
+		credits.credits_check()
 	end
 	
 end
@@ -180,8 +188,9 @@ function love.draw(dt)
 		menu.menu_draw()
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
-		love.graphics.draw(backGround, quadBack, 0, 0)		
-		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
+		--love.graphics.draw(backGround, quadBack, 0, 0)		
+		--love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
+		backgroundAnim:draw(backGround, 0, 0)
 		player.draw(altura)
 		
 		local i	
@@ -203,7 +212,7 @@ function love.draw(dt)
 		gameOver.gameOver_draw(character, player)
 
 	elseif gamestate == "credits" then
-		
+		credits.credits_draw()
 	end
 	
 end
@@ -278,13 +287,18 @@ function love.mousepressed(x,y)
 			gamestate = retorno
 			love.load()
 		end
-	end
-	if gamestate == "over" then
+	elseif gamestate == "over" then
 		retorno = gameOver.gameOver_click(x,y)	
 		if retorno ~= nil then 
 			gamestate = retorno
 			love.load()
 		end	
+	elseif gamestate == "credits" then
+		retorno = credits.credits_click(x,y)	
+		if retorno ~= nil then 
+			gamestate = retorno
+			love.load()
+		end
 	end
 
 end

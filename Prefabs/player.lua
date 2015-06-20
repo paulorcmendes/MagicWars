@@ -68,7 +68,7 @@ end
 
 function load(largura, altura)
 	-- character = getSavedCharacter()
-	scoreFont = love.graphics.setNewFont("score.ttf", 30)
+	scoreFont = love.graphics.setNewFont("Font/score.ttf", 30)
 	character.largura = 110
 	character.altura = 150
 	character.pontos = defaultPontos	

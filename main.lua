@@ -1,6 +1,7 @@
 --##Game Logic
 --#Imports
-require "menu"
+menu  = require "menu"
+gameOver = require "gameOver"
 local player = require("Prefabs/player")
 local anim8 = require ("Lib/anim8")
 local enemyOne = require ("Prefabs/enemyOne")
@@ -25,13 +26,14 @@ function  love.load()
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		love.window.setFullscreen(true)	
+		--love.window.setFullscreen(true)	
 		gamestate = "menu"
-		menu_load()	
+		menu.menu_load()	
 		
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		carregaGame()
 	elseif gamestate == "over" then
+		gameOver.gameOver_load()
 		
 	elseif gamestate == "credits" then
 
@@ -67,7 +69,7 @@ function love.update(dt)
 	elseif gamestate == "menu" then
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
-		menu_check()
+		menu.menu_check()
 	
 	elseif gamestate == "onPlay" then
 		character.anim:update(dt)
@@ -160,14 +162,9 @@ function love.update(dt)
 		musica:pause()
 		especial:pause()
 		
-		if love.keyboard.isDown("m") then
-			gamestate = "menu"
-			love.load()			
-		end
-		if love.keyboard.isDown("r") then
-			gamestate = "onPlay"
-			carregaGame()			
-		end
+		mousex = love.mouse.getX()
+		mousey = love.mouse.getY()
+		gameOver.gameOver_check()
 		
 	elseif gamestate == "credits" then
 
@@ -180,7 +177,7 @@ function love.draw(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		menu_draw()
+		menu.menu_draw()
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		love.graphics.draw(backGround, quadBack, 0, 0)		
@@ -203,13 +200,12 @@ function love.draw(dt)
 			love.graphics.draw(image, (largura-image:getWidth())/2, (altura-image:getHeight())/2)
 		end
 	elseif gamestate == "over" then
-		love.graphics.print("Score: "..character.pontos)
-		love.graphics.print("Best Score: "..player.atualizaBestScore(), 0, 15)
-		love.graphics.print("M - Menu", 0, 30)
-		love.graphics.print("R - Try Again", 0, 45)
-	elseif gamestate == "credits" then
+		gameOver.gameOver_draw(character, player)
 
+	elseif gamestate == "credits" then
+		
 	end
+	
 end
 
 function podeAtirar()
@@ -247,6 +243,7 @@ function updateEnemies(dt)
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
 			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, character.largura, character.altura) then
 				gamestate = "over"
+				love.load()
 			end
 			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura) then
 			 	table.remove(enemies[i].tiros, j)
@@ -274,8 +271,20 @@ end
 
 
 function love.mousepressed(x,y)
+	local retorno
 	if gamestate == "menu" then
-		gamestate = menu_click(x,y)
-		love.load()
+		retorno = menu.menu_click(x,y)	
+		if retorno ~= nil then 
+			gamestate = retorno
+			love.load()
+		end
 	end
+	if gamestate == "over" then
+		retorno = gameOver.gameOver_click(x,y)	
+		if retorno ~= nil then 
+			gamestate = retorno
+			love.load()
+		end	
+	end
+
 end

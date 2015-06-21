@@ -23,7 +23,7 @@ function draw(altura)
 		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
 	end
 	love.graphics.setFont(scoreFont)
-	love.graphics.setColor(0,0,0)
+	love.graphics.setColor(150,150,150)
 	love.graphics.print("Score: "..character.pontos, 70, 5)
 	love.graphics.setColor(255,255,255)
    	quadManaBack = love.graphics.newQuad(0, 0, character.mana*294/100, manaBack:getHeight()/3, manaBack:getWidth(), manaBack:getHeight()/3)

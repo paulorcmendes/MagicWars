@@ -112,6 +112,8 @@ function load(largura, altura)
 	character.speed = defaultSpeed
 	ultimoTiro = os.clock()-tempoDeTiro
 	ultimoEspecial = os.clock()-tempoDeEspecial
+	esmaece = false
+	apertou = false
 	bullets = {}
 	player.bullets = bullets
 	manaBack = love.graphics.newImage("Sprites/manaBack.png")

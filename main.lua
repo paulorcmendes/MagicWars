@@ -132,7 +132,7 @@ function love.update(dt)
 	elseif gamestate == "over" then
 		menuSound:play()
 		musica:pause()
-		player.especial:pause()
+		player.especial:stop()
 		
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()

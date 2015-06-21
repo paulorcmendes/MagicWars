@@ -1,26 +1,31 @@
 math.randomseed(os.time())
+local anim8 = require ("Lib/anim8")
 nuvem = {}
 r = {}
 function carrega()
 	w = love.window.getWidth()
-	image = love.graphics.newImage('Sprites/nuvem.png')
-	r.image = image
+	r.image = love.graphics.newImage('Sprites/nuvem.png')
+	local g = anim8.newGrid(200, 540, image:getWidth(), image:getHeight())
+  	r.anim = anim8.newAnimation(g('1-5',1), 0.1)
+
 	for i = 1,10 do
 		table.insert(nuvem, {x = math.random(0,1400),
 							velocidade = math.random(1, 5)})
 	end
 end
-function atualiza()
+function atualiza(dt)
+	r.anim:update(dt)
 	for  i = 1,10 do
 		nuvem[i].x = nuvem[i].x -nuvem[i].velocidade/10
-		if nuvem[i].x < 0-image:getWidth() then
+		if nuvem[i].x < 0-r.image:getWidth() then
 			nuvem[i].x = math.random(1400,1500)
 		end
 	end	
 end
 function desenha()
 	for i = 1,10 do
-		love.graphics.draw(r.image,nuvem[i].x, i*20)
+		--love.graphics.draw(r.image,nuvem[i].x, i*20)
+		r.anim:draw(r.image, nuvem[i].x, i*20)
 	end
 
 end

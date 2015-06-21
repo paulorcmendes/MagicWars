@@ -80,7 +80,7 @@ function love.update(dt)
 		--backgroundAnim:update(dt)
 		whatIsLove:stop()
 		player.magoHead.anim:update(dt)
-		nuvem.atualiza()
+		nuvem.atualiza(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()

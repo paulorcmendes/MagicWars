@@ -5,8 +5,8 @@ r = {}
 function carrega()
 	w = love.window.getWidth()
 	r.image = love.graphics.newImage('Sprites/nuvem.png')
-	local g = anim8.newGrid(200, 540, image:getWidth(), image:getHeight())
-  	r.anim = anim8.newAnimation(g('1-5',1), 0.1)
+	local g = anim8.newGrid(200, 540, r.image:getWidth(), r.image:getHeight())
+  	r.anim = anim8.newAnimation(g('1-5',1), 0.5)
 
 	for i = 1,10 do
 		table.insert(nuvem, {x = math.random(0,1400),

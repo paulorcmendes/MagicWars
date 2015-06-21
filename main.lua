@@ -1,8 +1,9 @@
 --##Game Logic
 --#Imports
-menu  = require "menu"
-gameOver = require "gameOver"
-credits = require("States/credits")
+local menu  = require "menu"
+local nuvem = require "Prefabs/nuvem"
+local gameOver = require "gameOver"
+local credits = require("States/credits")
 local player = require("Prefabs/player")
 local anim8 = require ("Lib/anim8")
 local enemyOne = require ("Prefabs/enemyOne")
@@ -47,6 +48,7 @@ function  love.load()
    
 end
 function carregaGame()	
+	nuvem.carrega()
 	codigoInimigo = 0
 	enemies = {}
 	enemyOne.zera(codigoInimigo)
@@ -60,16 +62,8 @@ function carregaGame()
 	musica = love.audio.newSource("Sounds/sound.mp3")
 	musica:setVolume(0.75)
 	especial = love.audio.newSource("Sounds/especial.mp3")
-	especial:setVolume(5)
-
-	floor = love.graphics.newImage("Sprites/floor.png")
-	floor:setWrap( "repeat", "repeat" )
-	quadFloor = love.graphics.newQuad(0, 0, largura+10, floor:getHeight()*2, floor:getWidth(), floor:getHeight())
-	backGround = love.graphics.newImage("Sprites/teste.png")
-	--local z = anim8.newGrid(1367, 768, backGround:getWidth(), backGround:getHeight())
-	--backgroundAnim = anim8.newAnimation(z('1-8', 1), 0.2)
-	--backGround:setWrap( "repeat", "repeat" )
-	--quadBack = love.graphics.newQuad(0, 0, largura, altura, largura, altura)		
+	especial:setVolume(5)	
+	backGround = love.graphics.newImage("Sprites/teste.png")		
 end
 --#On every frame
 function love.update(dt)
@@ -87,6 +81,7 @@ function love.update(dt)
 		whatIsLove:stop()
 		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
+		nuvem.atualiza()
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
@@ -200,13 +195,12 @@ function love.draw(dt)
 		menu.menu_draw()
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
-		--love.graphics.draw(backGround, quadBack, 0, 0)		
-		--backgroundAnim:draw(backGround, 0, 0)
+		
 		love.graphics.setColor(255, corBack, corBack)
 		love.graphics.draw(backGround, 0, 0)
 		love.graphics.setColor(255, 255, 255)
-		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
-		player.draw(altura)
+		nuvem.desenha()
+				player.draw(altura)
 		
 		local i	
 

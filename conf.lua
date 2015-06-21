@@ -6,4 +6,5 @@ function love.conf(t)
    t.window.minwidth = 800             
    t.window.minheight = 600
    t.window.title = "Magic Wars - Avoid The Darkness" 
+    t.window.icon = "Sprites/icon.png"
 end

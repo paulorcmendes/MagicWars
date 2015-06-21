@@ -2,7 +2,7 @@ e = {}
 local anim8 = require ("Lib/anim8")
 local hp = 100
 local tiros = {}
-local incremento = 5
+local incremento = 2
 local tempoDeTiro = 0.2
 local ultimoTiro = os.clock()-tempoDeTiro
 local x = 50
@@ -11,11 +11,17 @@ local largura = 100
 local altura = 101
 
 function zera(codigoInimigo)
-
-	incremento = 2+codigoInimigo
 	e.altura = altura
 	e.largura = largura
 	campoDeVisao = e.largura/2
+	incremento = 2
+
+	if codigoInimigo<=5 then
+		incremento=incremento+codigoInimigo
+	else
+		incremento=incremento+5
+		campoDeVisao = campoDeVisao+(codigoInimigo-5)*5
+	end
 
 	e.x = x
 	e.y = y
@@ -50,13 +56,13 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 	    tempo = true
 	end	
 	if  tempo then
-		if (playerX - campoDeVisao < enemyX and enemyX < playerX + campoDeVisao and e.y>=50) then
+		if (playerX >= enemyX-campoDeVisao  and playerX  <= enemyX + campoDeVisao and e.y>=50) then
 			ultimoTiro = tempoDeJogo
 			shoot = love.graphics.newImage("Sprites/bolaArcoiris.png")
 
 			table.insert(tiros, {
 				tSprite = shoot,
-				tx = enemyX+e.largura/2-shoot:getWidth()/2,
+				tx = enemyX-shoot:getWidth()/2,
 				ty = enemyY,
 				tspeed = 10
 			})
@@ -74,13 +80,7 @@ function draw()
 	end
 end
 
-function invokeEnemy()
-			
-end
-
-
 e.zera = zera
-invokeEnemy()
 e.move = move
 e.ataca = ataca
 e.draw = draw

@@ -3,6 +3,7 @@ local anim8 = require ("Lib/anim8")
 nuvem = {}
 r = {}
 function carrega()
+	nuvem = {}
 	w = love.window.getWidth()
 	r.image = love.graphics.newImage('Sprites/nuvem.png')
 	local g = anim8.newGrid(200, 345, r.image:getWidth(), r.image:getHeight())

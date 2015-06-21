@@ -13,16 +13,18 @@ local defaultPontos = 0
 local defaultSpeed = 300
 local bullets = {}
 local magoHead = {}
-local quadBack
-local quadManaBack
-local manaBack
-local manaBar
-local backGround
+local music
+local tempoDeJogo = 0
+
 local largura = love.graphics.getWidth()
 local altura = love.graphics.getHeight()
 
-function draw()
+function update(tempo, dt)
+	player.magoHead.anim:update(dt)
+	tempoDeJogo = tempo
+end
 
+function draw()
 	character.anim:draw(character.image, character.x, character.y)	
 	for i in ipairs(player.bullets) do
 		love.graphics.draw(player.bullets[i].bimage, player.bullets[i].bx, player.bullets[i].by)
@@ -49,7 +51,7 @@ function draw()
 end
 function podeAtirar()
 	local tempo
-	if (os.clock()-ultimoTiro)<tempoDeTiro then
+	if (tempoDeJogo-ultimoTiro)<tempoDeTiro then
 		tempo = false
 	else
 	    tempo = true
@@ -58,7 +60,7 @@ function podeAtirar()
 end
 function podeJogarEspecial()
 	local tempo
-	if (os.clock()-ultimoEspecial)<tempoDeEspecial then
+	if (tempoDeJogo-ultimoEspecial)<tempoDeEspecial then
 		tempo = false
 	else
 	    tempo = true
@@ -70,7 +72,7 @@ function savePlayer()
 end
 function shoot()
 	if podeAtirar() then
-		ultimoTiro = os.clock()
+		ultimoTiro = tempoDeJogo
 		character.mana = character.mana-2
 		table.insert(bullets, {
 				bimage = love.graphics.newImage("Sprites/bullet.png"),
@@ -100,18 +102,18 @@ function atualizaBestScore()
 
 end
 
-function load(largura, altura)
+function load(tempo)
 	-- character = getSavedCharacter()
 	especial:setVolume(5)	
-
+	tempoDeJogo = tempo
 	scoreFont = love.graphics.setNewFont("Font/score.ttf", 30)
 	character.largura = 110
 	character.altura = 150
 	character.pontos = defaultPontos	
 	character.mana = defaultMana  
 	character.speed = defaultSpeed
-	ultimoTiro = os.clock()-tempoDeTiro
-	ultimoEspecial = os.clock()-tempoDeEspecial
+	ultimoTiro = tempoDeJogo-tempoDeTiro
+	ultimoEspecial = tempoDeJogo-tempoDeEspecial
 	esmaece = false
 	apertou = false
 	bullets = {}
@@ -139,11 +141,12 @@ function load(largura, altura)
 		
 	return character
 end
-function ativaEspecial() 
+function ativaEspecial(musica) 
+	music = musica
 	if podeJogarEspecial() then 
-		ultimoEspecial = os.clock()
+		ultimoEspecial = tempoDeJogo
 		apertou = true		
-	   	comecoEsmaece = os.clock() 	
+	   	comecoEsmaece = tempoDeJogo 	
 	   	character.mana = character.mana-50		   	
     end
 
@@ -152,13 +155,13 @@ end
 function atualizaEspecial(enemies)
 	if apertou then 
    		love.audio.play(especial)
-   		if os.clock()-comecoEsmaece>1.5 then 
+   		if tempoDeJogo-comecoEsmaece>1.5 then 
 			esmaece = true
-			comecoEsmaece = os.clock()
+			comecoEsmaece = tempoDeJogo
 			nComeco = comecoEsmaece  			
 	   		apertou = false
 	   		for i in ipairs(enemies) do
-				enemies[i].hp = enemies[i].hp-50
+				enemies[i].hp = enemies[i].hp-30
 			end	
 	   		character.pontos = character.pontos+10
 		end
@@ -166,7 +169,7 @@ function atualizaEspecial(enemies)
 	if esmaece then
 		love.audio.play(especial)
 
-   		tAtual = os.clock()
+   		tAtual = tempoDeJogo
    		if tAtual-comecoEsmaece<=1 then
    			if tAtual-nComeco<=0.02 then 
    				esmaecerTela = true
@@ -176,9 +179,9 @@ function atualizaEspecial(enemies)
    			if tAtual-nComeco>0.04 then
    				nComeco = tAtual
    			end
-   			musica:setVolume(0.40)
+   			music:setVolume(0.40)
    		else
-   			musica:setVolume(0.75)
+   			music:setVolume(0.75)
    		    apertou = false
    		    esmaece = false
    		    esmaecerTela = false
@@ -187,6 +190,7 @@ function atualizaEspecial(enemies)
    	return enemies
 end
 
+player.update = update
 player.ativaEspecial = ativaEspecial
 player.especial = especial
 player.atualizaBestScore = atualizaBestScore

@@ -19,7 +19,7 @@ local backgroundAnim
 local backGround
 local corBack = 250
 local decCorBack = 0.5
-local whatIsLove = love.audio.newSource("Sounds/whatIsLove.mp3")
+local menuSound = love.audio.newSource("Sounds/menu.mp3")
 
 
 --#Variables
@@ -71,14 +71,14 @@ function love.update(dt)
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		whatIsLove:stop()
+		menuSound:play()
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
 		menu.menu_check()
 	
 	elseif gamestate == "onPlay" then
 		--backgroundAnim:update(dt)
-		whatIsLove:stop()
+		menuSound:stop()
 		player.magoHead.anim:update(dt)
 		nuvem.atualiza()
 		tempoDeJogo = os.clock()-tempoDePausa
@@ -161,7 +161,7 @@ function love.update(dt)
 
    		
 	elseif gamestate == "onPause" then
-		whatIsLove:stop()
+		menuSound:stop()
 		musica:pause()
 		especial:pause()
 		tempoDePausa = os.clock()-tempoDeJogo
@@ -170,7 +170,7 @@ function love.update(dt)
    		end
 
 	elseif gamestate == "over" then
-		whatIsLove:stop()
+		menuSound:play()
 		musica:pause()
 		especial:pause()
 		
@@ -179,7 +179,7 @@ function love.update(dt)
 		gameOver.gameOver_check()
 		
 	elseif gamestate == "credits" then
-		whatIsLove:play()
+		menuSound:play()
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
 		credits.credits_check()

@@ -40,7 +40,9 @@ function gameOver_draw(character, player)
 	stringScore = ("Score: "..i)
 	stringBestScore = ("Best Score: "..player.atualizaBestScore())
 	love.graphics.print(stringScore, 683-scoreFont:getWidth(stringScore)/2, 390)
- 	love.graphics.print(stringBestScore, 683-scoreFont:getWidth(stringBestScore)/2, 430)
+	if i==score then
+ 		love.graphics.print(stringBestScore, 683-scoreFont:getWidth(stringBestScore)/2, 430)
+ 	end 
 	
 end
 

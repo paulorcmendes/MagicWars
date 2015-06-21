@@ -16,6 +16,9 @@ local tempoDePausa = 0
 local codigoInimigo
 local backgroundAnim
 local backGround
+local corBack = 250
+local decCorBack = 0.5
+local whatIsLove = love.audio.newSource("Sounds/whatIsLove.mp3")
 
 
 --#Variables
@@ -29,7 +32,7 @@ function  love.load()
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
-		--love.window.setFullscreen(true)	
+		love.window.setFullscreen(true)	
 		gamestate = "menu"
 		menu.menu_load()	
 		
@@ -58,42 +61,44 @@ function carregaGame()
 	musica:setVolume(0.75)
 	especial = love.audio.newSource("Sounds/especial.mp3")
 	especial:setVolume(5)
-	--floor = love.graphics.newImage("Sprites/floor.png")
-	--floor:setWrap( "repeat", "repeat" )
-	--quadFloor = love.graphics.newQuad(0, 0, largura, floor:getHeight(), floor:getWidth(), floor:getHeight())
-	backGround = love.graphics.newImage("Sprites/background.png")
-	local z = anim8.newGrid(1367, 768, backGround:getWidth(), backGround:getHeight())
-	backgroundAnim = anim8.newAnimation(z('1-8', 1), 0.2)
+
+	floor = love.graphics.newImage("Sprites/floor.png")
+	floor:setWrap( "repeat", "repeat" )
+	quadFloor = love.graphics.newQuad(0, 0, largura+10, floor:getHeight()*2, floor:getWidth(), floor:getHeight())
+	backGround = love.graphics.newImage("Sprites/teste.png")
+	--local z = anim8.newGrid(1367, 768, backGround:getWidth(), backGround:getHeight())
+	--backgroundAnim = anim8.newAnimation(z('1-8', 1), 0.2)
 	--backGround:setWrap( "repeat", "repeat" )
 	--quadBack = love.graphics.newQuad(0, 0, largura, altura, largura, altura)		
 end
 --#On every frame
 function love.update(dt)
+
 	if gamestate == "intro" then
 
 	elseif gamestate == "menu" then
+		whatIsLove:stop()
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
 		menu.menu_check()
 	
 	elseif gamestate == "onPlay" then
-		backgroundAnim:update(dt)
+		--backgroundAnim:update(dt)
+		whatIsLove:stop()
 		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
 		musica:play()
    		updateEnemies(dt)
-      	--player.onMove = false
+      	
 
 
 		if love.keyboard.isDown("right") then
       		character.x = character.x + (character.speed * dt)
-      		--player.onMove = true
    		end  
    		if love.keyboard.isDown("left") then
       		character.x = character.x - (character.speed * dt)
-      		--player.onMove = true
 
    		end 
    		if love.keyboard.isDown("a") and podeAtirar() then 
@@ -154,9 +159,14 @@ function love.update(dt)
    		if character.mana>100 then 
    			character.mana = 100
    		end
-   		
+   		corBack = corBack+decCorBack
+		if corBack < 60 or corBack> 250 then 
+			decCorBack = decCorBack*-1
+		end  
+
    		
 	elseif gamestate == "onPause" then
+		whatIsLove:stop()
 		musica:pause()
 		especial:pause()
 		tempoDePausa = os.clock()-tempoDeJogo
@@ -165,6 +175,7 @@ function love.update(dt)
    		end
 
 	elseif gamestate == "over" then
+		whatIsLove:stop()
 		musica:pause()
 		especial:pause()
 		
@@ -173,6 +184,7 @@ function love.update(dt)
 		gameOver.gameOver_check()
 		
 	elseif gamestate == "credits" then
+		whatIsLove:play()
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
 		credits.credits_check()
@@ -189,8 +201,11 @@ function love.draw(dt)
 
 	elseif gamestate == "onPlay" or gamestate == "onPause" then
 		--love.graphics.draw(backGround, quadBack, 0, 0)		
-		--love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
-		backgroundAnim:draw(backGround, 0, 0)
+		--backgroundAnim:draw(backGround, 0, 0)
+		love.graphics.setColor(255, corBack, corBack)
+		love.graphics.draw(backGround, 0, 0)
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.draw(floor, quadFloor, 0, altura-floor:getHeight())
 		player.draw(altura)
 		
 		local i	
@@ -202,7 +217,7 @@ function love.draw(dt)
 		
 		if esmaecerTela then 
 			love.graphics.setColor(250, 250, 250)
-			love.graphics.rectangle("fill", 0, 0, largura, altura)
+			love.graphics.rectangle("fill", 0, 0, largura+50, altura+50)
 		end
 		if gamestate == "onPause" then
 			local image = love.graphics.newImage("Sprites/paused.png")

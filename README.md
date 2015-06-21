@@ -7,4 +7,4 @@ UFMA
 
 --------------------------------------------------------------
 
-Link pra download: https://bitbucket.org/andsfonseca/mw-ad/src/2da67bd8db7a5a2ae17bfbd69adcc22e8caf75ff/Magic%20Wars%20-%20Avoid%20The%20Darkness.exe?at=master
+Link pra download: https://bitbucket.org/andsfonseca/mw-ad/src/0372696f0aa186a7813ac33d1ef95b28b08cf221/Love%20Compacted%20Project.love?at=master

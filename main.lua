@@ -53,16 +53,12 @@ function carregaGame()
 	enemies = {}
 	enemyOne.zera(codigoInimigo)
 	enemies[1] = enemyOne
-	tempoDeTiro = 0.2
-	ultimoTiro = os.clock()-tempoDeTiro	
 	character = player.load(largura, altura)		
 	esmaecerTela = false
 	apertou = false
 	esmaece = false
 	musica = love.audio.newSource("Sounds/sound.mp3")
 	musica:setVolume(0.75)
-	especial = love.audio.newSource("Sounds/especial.mp3")
-	especial:setVolume(5)	
 	backGround = love.graphics.newImage("Sprites/teste.png")		
 end
 --#On every frame
@@ -80,6 +76,7 @@ function love.update(dt)
 		--backgroundAnim:update(dt)
 		menuSound:stop()
 		player.magoHead.anim:update(dt)
+		enemies = player.atualizaEspecial(enemies)
 		nuvem.atualiza(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
 		character.mana=character.mana+0.03
@@ -96,14 +93,11 @@ function love.update(dt)
       		character.x = character.x - (character.speed * dt)
 
    		end 
-   		if love.keyboard.isDown("a") and podeAtirar() then 
-   			ultimoTiro = os.clock()   			
+   		if love.keyboard.isDown("a") then    			  			
    			player.shoot()
    		end
-   		if love.keyboard.isDown("d") and character.mana>=75 then
-   			character.mana = character.mana-75
-   			comecoEsmaece = os.clock()
-   			apertou = true
+   		if love.keyboard.isDown("s") then
+   			player.ativaEspecial() 				
    		end
    		if love.keyboard.isDown("p") then
    			gamestate = "onPause"
@@ -115,41 +109,7 @@ function love.update(dt)
    		end
    		if character.x<0 then character.x=0 end  
    		if character.x>largura-character.largura then character.x = largura-character.largura end
-   		if apertou then 
-   			love.audio.play(especial)
-   			if os.clock()-comecoEsmaece>1.5 then 
-
-   				for i in ipairs(enemies) do
-   					enemies[i].hp = enemies[i].hp-50
-   				end
-   				esmaece = true
-   				comecoEsmaece = os.clock()
-   				nComeco = comecoEsmaece   	
-   				apertou = false			
-   			end
-   		end
-   		if esmaece then
-   			love.audio.play(especial)
-
-   			tAtual = os.clock()
-   			if tAtual-comecoEsmaece<=1 then
-   				if tAtual-nComeco<=0.02 then 
-   					esmaecerTela = true
-   				else 
-   					esmaecerTela = false
-   				end
-   				if tAtual-nComeco>0.04 then
-   					nComeco = tAtual
-   				end
-   				musica:setVolume(0.40)
-   			else
-   				musica:setVolume(0.75)
-   			    apertou = false
-   			    esmaece = false
-   			    esmaecerTela = false
-   			end
-
-   		end
+   		
    		
    		if character.mana>100 then 
    			character.mana = 100
@@ -163,7 +123,7 @@ function love.update(dt)
 	elseif gamestate == "onPause" then
 		menuSound:stop()
 		musica:pause()
-		especial:pause()
+		player.especial:pause()
 		tempoDePausa = os.clock()-tempoDeJogo
 		if love.keyboard.isDown("p") then
    			gamestate = "onPlay"   			
@@ -172,7 +132,7 @@ function love.update(dt)
 	elseif gamestate == "over" then
 		menuSound:play()
 		musica:pause()
-		especial:pause()
+		player.especial:pause()
 		
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
@@ -200,19 +160,14 @@ function love.draw(dt)
 		love.graphics.draw(backGround, 0, 0)
 		love.graphics.setColor(255, 255, 255)
 		nuvem.desenha()
-				player.draw(altura)
+		player.draw()
 		
 		local i	
 
 		for i in ipairs(enemies) do
 			enemies[i].draw()
 		end
-
 		
-		if esmaecerTela then 
-			love.graphics.setColor(250, 250, 250)
-			love.graphics.rectangle("fill", 0, 0, largura+50, altura+50)
-		end
 		if gamestate == "onPause" then
 			local image = love.graphics.newImage("Sprites/paused.png")
 			love.graphics.draw(image, (largura-image:getWidth())/2, (altura-image:getHeight())/2)
@@ -226,15 +181,6 @@ function love.draw(dt)
 	
 end
 
-function podeAtirar()
-	local tempo
-	if (os.clock()-ultimoTiro)<tempoDeTiro then
-		tempo = false
-	else
-	    tempo = true
-	end	
-	return tempo and character.mana>=2
-end
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and
@@ -263,7 +209,7 @@ function updateEnemies(dt)
 				gamestate = "over"
 				love.load()
 			end
-			if  (enemies[i].tiros[j].ty < -20) or (enemies[i].tiros[j].ty > altura) then
+			if  (enemies[i].tiros[j].ty > altura-40) or (enemies[i].tiros[j].ty < -20) then
 			 	table.remove(enemies[i].tiros, j)
 			end
 		end

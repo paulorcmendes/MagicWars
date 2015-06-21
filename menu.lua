@@ -9,9 +9,9 @@ function menu_load()
 	creditsButton = love.graphics.newImage("Sprites/creditsButton.png")
 	quitButton = love.graphics.newImage("Sprites/quitButton.png")
 
-	table.insert(button, {x=650,y=300,image=playButton,id="play", mouseover=false})
-	table.insert(button, {x=750,y=425,image=creditsButton,id="credits", mouseover=false})
-	table.insert(button, {x=850,y=550,image=quitButton,id="quit", mouseover=false})
+	table.insert(button, {x=600,y=300,image=playButton,id="play", mouseover=false})
+	table.insert(button, {x=700,y=425,image=creditsButton,id="credits", mouseover=false})
+	table.insert(button, {x=800,y=550,image=quitButton,id="quit", mouseover=false})
 end
 
 function menu_draw()

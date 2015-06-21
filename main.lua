@@ -79,7 +79,6 @@ function love.update(dt)
 	elseif gamestate == "onPlay" then
 		--backgroundAnim:update(dt)
 		whatIsLove:stop()
-		character.anim:update(dt)
 		player.magoHead.anim:update(dt)
 		nuvem.atualiza()
 		tempoDeJogo = os.clock()-tempoDePausa
@@ -90,9 +89,10 @@ function love.update(dt)
 
 
 		if love.keyboard.isDown("right") then
+			character.anim:update(dt)
       		character.x = character.x + (character.speed * dt)
-   		end  
-   		if love.keyboard.isDown("left") then
+   		elseif love.keyboard.isDown("left") then
+			character.anim:update(dt)
       		character.x = character.x - (character.speed * dt)
 
    		end 

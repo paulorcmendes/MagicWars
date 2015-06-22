@@ -22,7 +22,7 @@ local altura = love.graphics.getHeight()
 function update(tempo, dt)
 	player.magoHead.anim:update(dt)
 	tempoDeJogo = tempo
-	character.mana=character.mana+0.03
+	character.mana=character.mana+0.05
 end
 
 function draw()

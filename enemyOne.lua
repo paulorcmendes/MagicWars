@@ -37,7 +37,10 @@ function zera(codigoInimigo)
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
 function move()	
-	
+	if e.max - e.min <=e.largura*1.5 then 
+		e.min = math.random(0, telaX/2-e.largura)
+		e.max = math.random(telaX/2+e.largura, telaX)
+	end
 	if e.y<120 then 
 		e.y = e.y + incremento
 	else

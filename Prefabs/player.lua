@@ -10,10 +10,10 @@ local tempoDeTiro = 0.2
 local tempoDeEspecial = 3
 local character ={}
 local defaultPontos = 0
+local defaultLife = 3
 local defaultSpeed = 300
 local bullets = {}
 local magoHead = {}
-local music
 local tempoDeJogo = 0
 
 local largura = love.graphics.getWidth()
@@ -37,6 +37,9 @@ function draw()
 	love.graphics.draw(manaBack, quadManaBack, 65, 45)
 	love.graphics.draw(manaBar, 5.5, 4.5)
 	magoHead.anim:draw(magoHead.image, 10, -8)	
+	for i = 1, character.life do 
+		love.graphics.draw(love.graphics.newImage("Sprites/life.png"), 200+i*40, 70)
+	end
 	if character.mana>=50 and podeJogarEspecial() then 
 		love.graphics.draw(love.graphics.newImage("Sprites/bs.png"), 110, 70)
 	end
@@ -104,13 +107,14 @@ end
 
 function load(tempo)
 	-- character = getSavedCharacter()
-	especial:setVolume(5)	
+	especial:setVolume(0.4)	
 	tempoDeJogo = tempo
 	scoreFont = love.graphics.setNewFont("Font/score.ttf", 30)
 	character.largura = 110
 	character.altura = 150
 	character.pontos = defaultPontos	
 	character.mana = defaultMana  
+	character.life = defaultLife
 	character.speed = defaultSpeed
 	ultimoTiro = tempoDeJogo-tempoDeTiro
 	ultimoEspecial = tempoDeJogo-tempoDeEspecial
@@ -141,8 +145,8 @@ function load(tempo)
 		
 	return character
 end
-function ativaEspecial(musica) 
-	music = musica
+function ativaEspecial() 
+	
 	if podeJogarEspecial() then 
 		ultimoEspecial = tempoDeJogo
 		apertou = true		
@@ -179,9 +183,9 @@ function atualizaEspecial(enemies)
    			if tAtual-nComeco>0.04 then
    				nComeco = tAtual
    			end
-   			music:setVolume(0.40)
+   			
    		else
-   			music:setVolume(0.75)
+   			
    		    apertou = false
    		    esmaece = false
    		    esmaecerTela = false

@@ -27,7 +27,7 @@ function load()
 	esmaecerTela = false
 	apertou = false
 	esmaece = false
-	musica:setVolume(0.75)
+	musica:setVolume(1)
 	backGround = love.graphics.newImage("Sprites/teste.png")		
 end
 
@@ -63,6 +63,9 @@ function atualiza(dt)
 	   	if love.keyboard.isDown("escape") then
 	   		r.musica:stop()   		
 	   		return "menu"	   		
+	   	end
+	   	if character.life<=0 then 
+	   		return "over"
 	   	end
 	   	if character.x<0 then character.x=0 end  
 	   	if character.x>largura-character.largura then character.x = largura-character.largura end
@@ -122,9 +125,10 @@ function updateEnemies(dt)
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
 			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, character.largura, character.altura) then
-				retorno = "over"				
-			end
-			if  (enemies[i].tiros[j].ty > altura-40) or (enemies[i].tiros[j].ty < -20) then
+				--retorno = "over"				
+				character.life = character.life-1
+				table.remove(enemies[i].tiros, j)
+			elseif  (enemies[i].tiros[j].ty > altura-40) or (enemies[i].tiros[j].ty < -20) then
 			 	table.remove(enemies[i].tiros, j)
 			end
 		end

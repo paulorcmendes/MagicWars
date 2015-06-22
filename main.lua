@@ -113,5 +113,4 @@ function love.mousepressed(x,y)
 			love.load()
 		end
 	end
-
 end

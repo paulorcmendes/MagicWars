@@ -3,7 +3,7 @@ local anim8 = require ("Lib/anim8")
 local hp = 100
 local tiros = {}
 local incremento = 2
-local tempoDeTiro = 0.2
+local tempoDeTiro = 0.1
 local ultimoTiro = os.clock()-tempoDeTiro
 local x = 50
 local y = -100
@@ -33,7 +33,7 @@ function zera(codigoInimigo)
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
 function move(telaX, telaY)	
-	if e.y<50 then 
+	if e.y<120 then 
 		e.y = e.y + incremento
 	else
 		if e.x>  telaX-e.largura  then 

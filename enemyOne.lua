@@ -26,8 +26,10 @@ function zera(codigoInimigo)
 	end
 
 	e.y = y
-	e.min = math.random(0, telaX/2-e.largura)
-	e.max = math.random(telaX/2+e.largura, telaX)
+	repeat 
+		e.min = math.random(0, telaX/2-e.largura)
+		e.max = math.random(telaX/2+e.largura, telaX)
+	until e.max - e.min > e.largura*1.5  
 	e.x = math.random(e.min, e.max)
 	e.hp = hp
 	tiros = {}
@@ -37,7 +39,7 @@ function zera(codigoInimigo)
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
 function move()	
-	if e.max - e.min <=e.largura*1.5 then 
+	while e.max - e.min <=e.largura*1.5 do
 		e.min = math.random(0, telaX/2-e.largura)
 		e.max = math.random(telaX/2+e.largura, telaX)
 	end
@@ -45,11 +47,16 @@ function move()
 		e.y = e.y + incremento
 	else
 		if e.x>  e.max-e.largura  then 
-			e.min = math.random(0, telaX/2-e.largura)
+
+			while e.max - e.min <=e.largura*1.5 do
+				e.min = math.random(0, telaX/2-e.largura)
+			end
 			incremento = incremento*-1
 		end
 		if e.x<e.min then
-			e.max = math.random(telaX/2+e.largura, telaX)
+			while e.max - e.min <=e.largura*1.5 do
+				e.max = math.random(telaX/2+e.largura, telaX)
+			end
 			incremento = incremento*-1
 		end
 		e.x = e.x+incremento

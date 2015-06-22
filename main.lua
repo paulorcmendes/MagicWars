@@ -1,10 +1,10 @@
 --##Game Logic
 --#Imports
-local onPlay = require "States/onPlay"
-local menu  = require "States/menu"
-local gameOver = require "States/gameOver"
-local credits = require("States/credits")
-local anim8 = require ("Lib/anim8")
+local onPlay = require "onPlay"
+local menu  = require "menu"
+local gameOver = require "gameOver"
+local credits = require("credits")
+local anim8 = require ("anim8")
 
 
 --#Variables

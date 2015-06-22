@@ -1,5 +1,5 @@
 math.randomseed(os.time())
-local anim8 = require ("Lib/anim8")
+local anim8 = require ("anim8")
 nuvem = {}
 r = {}
 function carrega()

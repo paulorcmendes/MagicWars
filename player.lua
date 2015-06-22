@@ -1,6 +1,6 @@
 --Imports
-local anim8 = require ("Lib/anim8")
-local saveFile = require ("Lib/saveFile")
+local anim8 = require ("anim8")
+local saveFile = require ("saveFile")
 local player = {}
 local nomeArquivo = "player.sav"
 local especial = love.audio.newSource("Sounds/especial.mp3")
@@ -172,7 +172,7 @@ function atualizaEspecial(enemies)
 		end
    	end
 	if esmaece then
-
+		love.audio.play(especial)
    		if tempoDeJogo-comecoEsmaece<=1 then
    			if tempoDeJogo-nComeco<=0.02 then 
    				esmaecerTela = true

@@ -1,14 +1,16 @@
 e = {}
-local anim8 = require ("Lib/anim8")
+math.randomseed(os.time())
+local anim8 = require ("anim8")
 local hp = 100
 local tiros = {}
 local incremento = 2
 local tempoDeTiro = 0.1
 local ultimoTiro = os.clock()-tempoDeTiro
-local x = 50
 local y = -100
 local largura = 100
 local altura = 101
+local telaX = love.graphics.getWidth()
+local telaY = love.graphics.getHeight()
 
 function zera(codigoInimigo)
 	e.altura = altura
@@ -23,8 +25,10 @@ function zera(codigoInimigo)
 		campoDeVisao = campoDeVisao+(codigoInimigo-5)*5
 	end
 
-	e.x = x
 	e.y = y
+	e.min = math.random(0, telaX/2-e.largura)
+	e.max = math.random(telaX/2+e.largura, telaX)
+	e.x = math.random(e.min, e.max)
 	e.hp = hp
 	tiros = {}
 	e.tiros = tiros
@@ -32,15 +36,17 @@ function zera(codigoInimigo)
 	local g = anim8.newGrid(e.largura, e.altura, e.image:getWidth(), e.image:getHeight())
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
-function move(telaX, telaY)	
+function move()	
+	
 	if e.y<120 then 
 		e.y = e.y + incremento
 	else
-		if e.x>  telaX-e.largura  then 
-
+		if e.x>  e.max-e.largura  then 
+			e.min = math.random(0, telaX/2-e.largura)
 			incremento = incremento*-1
 		end
-		if e.x<0 then
+		if e.x<e.min then
+			e.max = math.random(telaX/2+e.largura, telaX)
 			incremento = incremento*-1
 		end
 		e.x = e.x+incremento

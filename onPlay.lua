@@ -1,6 +1,6 @@
-local nuvem = require "Prefabs/nuvem"
-local player = require("Prefabs/player")
-local enemyOne = require ("Prefabs/enemyOne")
+local nuvem = require "nuvem"
+local player = require("player")
+local enemyOne = require ("enemyOne")
 local musica = love.audio.newSource("Sounds/sound.mp3")
 local enemies = {}
 local tempoDeJogo = 0
@@ -111,7 +111,7 @@ function updateEnemies(dt)
 
 	--Se não existirem inimigos, zera o inimigo e insere no vetor
 	if #enemies==0 then 
-   		enemyOne = require ("Prefabs/enemyOne")
+   		enemyOne = require ("enemyOne")
    		codigoInimigo = codigoInimigo+1
    		enemyOne.zera(codigoInimigo)
    		table.insert(enemies, enemyOne)			

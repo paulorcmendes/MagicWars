@@ -5,25 +5,23 @@ local menu  = require "States/menu"
 local gameOver = require "States/gameOver"
 local credits = require("States/credits")
 local anim8 = require ("Lib/anim8")
+
+
+--#Variables
+local gamestate = 0 --[[ intro - menu - onPlay -  over - credits ]]
 local largura = love.graphics.getWidth()
 local altura = love.graphics.getHeight()
 local backGround
 local menuSound = love.audio.newSource("Sounds/menu.mp3")
 
 
---#Variables
-local gamestate = 0 --[[ intro - menu - onPlay -  over - credits ]]
-
 --#On Start
 function  love.load()
 	if gamestate == 0 then 
 		gamestate = "menu"
 	end
-	if gamestate == "intro" then
-
-	elseif gamestate == "menu" then
+	if gamestate == "menu" then
 		love.window.setFullscreen(true)	
-		gamestate = "menu"
 		menu.menu_load()	
 		
 	elseif gamestate == "onPlay"then
@@ -40,15 +38,15 @@ end
 --#On every frame
 function love.update(dt)
 
-	if gamestate == "intro" then
-
-	elseif gamestate == "menu" then
+	if gamestate == "menu" then
 		menuSound:play()
 		mousex = love.mouse.getX()
 		mousey = love.mouse.getY()
 		menu.menu_check()
 	
 	elseif gamestate == "onPlay" then
+
+		--Recebe um gamestate do OnPlay
 		retorno = onPlay.atualiza(dt)
 		if retorno ~= nil then 
 			gamestate = retorno
@@ -76,9 +74,7 @@ end
 
 --Draw Objects
 function love.draw(dt)
-	if gamestate == "intro" then
-
-	elseif gamestate == "menu" then
+	if gamestate == "menu" then
 		menu.menu_draw()
 
 	elseif gamestate == "onPlay" then
@@ -94,6 +90,7 @@ end
 
 function love.mousepressed(x,y)
 	local retorno
+	--Retornos de quando clica em cada coisa de cada gamestate
 	if gamestate == "menu" then
 		retorno = menu.menu_click(x,y)	
 		if retorno ~= nil then 

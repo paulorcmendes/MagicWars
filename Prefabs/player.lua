@@ -22,6 +22,7 @@ local altura = love.graphics.getHeight()
 function update(tempo, dt)
 	player.magoHead.anim:update(dt)
 	tempoDeJogo = tempo
+	character.mana=character.mana+0.03
 end
 
 function draw()
@@ -79,8 +80,8 @@ function shoot()
 		character.mana = character.mana-2
 		table.insert(bullets, {
 				bimage = love.graphics.newImage("Sprites/bullet.png"),
-				bx = character.x+character.largura-22,
-				by = character.y,
+				bx = character.x+character.largura/2,
+				by = character.y-15,
 				bspeed = 600
 		})
 	end
@@ -171,22 +172,18 @@ function atualizaEspecial(enemies)
 		end
    	end
 	if esmaece then
-		love.audio.play(especial)
 
-   		tAtual = tempoDeJogo
-   		if tAtual-comecoEsmaece<=1 then
-   			if tAtual-nComeco<=0.02 then 
+   		if tempoDeJogo-comecoEsmaece<=1 then
+   			if tempoDeJogo-nComeco<=0.02 then 
    				esmaecerTela = true
    			else 
    				esmaecerTela = false
    			end
-   			if tAtual-nComeco>0.04 then
-   				nComeco = tAtual
+   			if tempoDeJogo-nComeco>0.04 then
+   				nComeco = tempoDeJogo
    			end
    			
-   		else
-   			
-   		    apertou = false
+   		else   			
    		    esmaece = false
    		    esmaecerTela = false
    		end

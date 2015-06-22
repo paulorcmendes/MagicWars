@@ -26,7 +26,6 @@ function atualiza(dt)
 end
 function desenha()
 	for i = 1,10 do
-		--love.graphics.draw(r.image,nuvem[i].x, i*20)
 		r.anim:draw(r.image, nuvem[i].x, i*20)
 	end
 

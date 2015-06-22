@@ -16,7 +16,7 @@ end
 
 function menu_draw()
 	love.graphics.draw(background, 0, 0)
-
+	--mouseOver: se o mouse está em cima do botão
 	for i,v in ipairs(button) do
 		if v.mouseover == false then
 			love.graphics.setColor(255,255,255)

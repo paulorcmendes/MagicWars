@@ -18,16 +18,11 @@ function load()
 	onPlay = true
 	nuvem.carrega()	
 	corBack = 250
-	nuvem.carrega()
 	codigoInimigo = 0
 	enemies = {}
 	enemyOne.zera(codigoInimigo)
 	enemies[1] = enemyOne
 	character = player.load(tempoDeJogo)		
-	esmaecerTela = false
-	apertou = false
-	esmaece = false
-	musica:setVolume(1)
 	backGround = love.graphics.newImage("Sprites/teste.png")		
 end
 
@@ -38,12 +33,8 @@ function atualiza(dt)
 		enemies = player.atualizaEspecial(enemies)
 		nuvem.atualiza(dt)
 		tempoDeJogo = os.clock()-tempoDePausa
-		character.mana=character.mana+0.03
 		musica:play()
-	   	if updateEnemies(dt) == "over" then 
-	   		return "over"
-	   	end
-
+	   	updateEnemies(dt)
 		if love.keyboard.isDown("right") then
 			character.anim:update(dt)
 	   		character.x = character.x + (character.speed * dt)
@@ -52,14 +43,12 @@ function atualiza(dt)
 	   		character.x = character.x - (character.speed * dt)
 	  	end 
 	   	if love.keyboard.isDown("a") then    			  			
-	   		player.shoot(tempoDeJogo)
+	   		player.shoot()
 	   	end
 	   	if love.keyboard.isDown("s") then
-	   		player.ativaEspecial(musica) 				
+	   		player.ativaEspecial() 				
 	   	end
-	   	if love.keyboard.isDown("p") then
-	   		onPlay = false	   		
-	   	end
+	  
 	   	if love.keyboard.isDown("escape") then
 	   		r.musica:stop()   		
 	   		return "menu"	   		
@@ -82,11 +71,20 @@ function atualiza(dt)
 		tempoDePausa = os.clock()-tempoDeJogo
 		musica:pause()
 		player.especial:pause()
-		if love.keyboard.isDown("p") then
-   			onPlay = true   			
-   		end
+		--love.keypressed()
 	end
 	
+end
+
+function love.keypressed(key)
+	    
+	if key == "p" then
+		if onPlay then
+	    	onPlay = false
+	    else 
+	        onPlay = true
+	    end
+	end
 end
 
 function draw()
@@ -110,28 +108,34 @@ end
 function updateEnemies(dt)
 	local i 
 	local j
-	local retorno = "algoQualquer"
+
+	--Se não existirem inimigos, zera o inimigo e insere no vetor
 	if #enemies==0 then 
    		enemyOne = require ("Prefabs/enemyOne")
    		codigoInimigo = codigoInimigo+1
    		enemyOne.zera(codigoInimigo)
    		table.insert(enemies, enemyOne)			
    	end
+
+
 	for i in ipairs(enemies) do
 
 		enemies[i].anim:update(dt)
 		enemies[i].ataca(character.x+character.largura/2, character.y, enemies[i].x+enemies[i].largura/2, enemies[i].y, tempoDeJogo)
-		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())		
+		enemies[i].move(love.graphics.getWidth(), love.graphics.getHeight())
+
+		--Percorre os tiros, atualizando sua velocidade. Se algum colidir com o personagem, a vida eh removida e a bala tbm. Se a bala sair do mapa ela eh removida
 		for j in ipairs(enemies[i].tiros) do
 			enemies[i].tiros[j].ty = enemies[i].tiros[j].ty+1*enemies[i].tiros[j].tspeed
 			if CheckCollision(enemies[i].tiros[j].tx, enemies[i].tiros[j].ty, enemies[i].tiros[j].tSprite:getWidth(), enemies[i].tiros[j].tSprite:getHeight(), character.x, character.y, character.largura, character.altura) then
-				--retorno = "over"				
 				character.life = character.life-1
 				table.remove(enemies[i].tiros, j)
 			elseif  (enemies[i].tiros[j].ty > altura-40) or (enemies[i].tiros[j].ty < -20) then
 			 	table.remove(enemies[i].tiros, j)
 			end
 		end
+
+		--Percorre os tiros do player. Checa se a bala colidi com o inimigo, se colidir ela sai da tela para depois ser removida
 		for j in ipairs(player.bullets) do
 			if CheckCollision(enemies[i].x, enemies[i].y, enemies[i].largura, enemies[i].altura, player.bullets[j].bx, player.bullets[j].by, player.bullets[j].bimage:getWidth(), player.bullets[j].bimage:getHeight())  then
 				enemies[i].hp = enemies[i].hp - 5
@@ -139,11 +143,16 @@ function updateEnemies(dt)
 				player.bullets[j].by = -25
 			end
 		end
+
+		--Se um inimigo morre, são adicionados pontos e o inimigo eh removido
 		if enemies[i].hp <= 0 then
 			character.pontos = character.pontos+50
 			table.remove(enemies, i)
 		end	
+
 	end
+
+	-- Se a bala do player estiver fora da tela, então ela será removida
 	for i in ipairs(player.bullets) do
 		player.bullets[i].by = player.bullets[i].by - 1* player.bullets[i].bspeed * dt		
 		if  (player.bullets[i].by < -20) or (player.bullets[i].by > love.graphics.getHeight() + 20) then
@@ -151,7 +160,6 @@ function updateEnemies(dt)
 		end
 	end
 
-	return retorno
 end
 
 

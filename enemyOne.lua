@@ -1,5 +1,5 @@
 e = {}
-math.randomseed(os.time())
+
 local anim8 = require ("anim8")
 local hp = 100
 local tiros = {}

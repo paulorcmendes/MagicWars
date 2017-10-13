@@ -22,7 +22,7 @@ local altura = love.graphics.getHeight()
 function update(tempo, dt)
 	player.magoHead.anim:update(dt)
 	tempoDeJogo = tempo
-	character.mana=character.mana+0.05
+	character.mana=character.mana+0.02
 end
 
 function draw()
@@ -60,7 +60,7 @@ function podeAtirar()
 	else
 	    tempo = true
 	end	
-	return tempo and character.mana>=2
+	return tempo and character.mana>=10
 end
 function podeJogarEspecial()
 	local tempo
@@ -77,7 +77,7 @@ end
 function shoot()
 	if podeAtirar() then
 		ultimoTiro = tempoDeJogo
-		character.mana = character.mana-2
+		character.mana = character.mana-10
 		table.insert(bullets, {
 				bimage = love.graphics.newImage("Sprites/bullet.png"),
 				bx = character.x+character.largura/2,

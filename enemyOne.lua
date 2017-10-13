@@ -3,8 +3,8 @@ e = {}
 local anim8 = require ("anim8")
 local hp = 100
 local tiros = {}
-local incremento = 2
-local tempoDeTiro = 0.1
+local incremento = 1
+local tempoDeTiro = 0.5
 local ultimoTiro = os.clock()-tempoDeTiro
 local y = -100
 local largura = 100
@@ -80,7 +80,7 @@ function ataca(playerX, playerY, enemyX, enemyY, tempoDeJogo)
 				tSprite = shoot,
 				tx = enemyX-shoot:getWidth()/2,
 				ty = enemyY,
-				tspeed = 10
+				tspeed = 2
 			})
 		end
 	end

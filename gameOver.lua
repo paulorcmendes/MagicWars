@@ -4,7 +4,7 @@ button={}
 function gameOver_load()
 	button={}
 	i = 0
-	velocidade = 2
+	velocidade = 1
 	scoreFont = love.graphics.setNewFont("Font/score.ttf", 30)
 	background = love.graphics.newImage("Sprites/gameOver.png")
 	menuButton = love.graphics.newImage("Sprites/menuButton.png")

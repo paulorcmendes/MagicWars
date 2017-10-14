@@ -3,7 +3,7 @@ e = {}
 local anim8 = require ("anim8")
 local hp = 100
 local tiros = {}
-local incremento = 1
+local incremento = 0.5
 local tempoDeTiro = 0.5
 local ultimoTiro = os.clock()-tempoDeTiro
 local y = -100
@@ -19,17 +19,19 @@ function zera(codigoInimigo)
 	incremento = 2
 
 	if codigoInimigo<=5 then
-		incremento=incremento+codigoInimigo
+		incremento=incremento+codigoInimigo/3
 	else
 		incremento=incremento+5
 		campoDeVisao = campoDeVisao+(codigoInimigo-5)*5
 	end
 
-	e.y = y
-	repeat 
-		e.min = math.random(0, telaX/2-e.largura)
-		e.max = math.random(telaX/2+e.largura, telaX)
-	until e.max - e.min > e.largura*1.5  
+	e.y = y	
+	--repeat 
+	--	e.min = math.random(0, telaX/2-e.largura)
+	--	e.max = math.random(telaX/2+e.largura, telaX)
+	--until e.max - e.min > e.largura*1.5  
+	e.min = 0
+	e.max = telaX
 	e.x = math.random(e.min, e.max)
 	e.hp = hp
 	tiros = {}
@@ -39,24 +41,24 @@ function zera(codigoInimigo)
 	e.anim = anim8.newAnimation(g('1-8', 1), 0.08)
 end
 function move()	
-	while e.max - e.min <=e.largura*1.5 do
-		e.min = math.random(0, telaX/2-e.largura)
-		e.max = math.random(telaX/2+e.largura, telaX)
-	end
+	--while e.max - e.min <=e.largura*1.5 do
+	--	e.min = math.random(0, telaX/2-e.largura)
+	--	e.max = math.random(telaX/2+e.largura, telaX)
+	--end
 	if e.y<120 then 
 		e.y = e.y + incremento
 	else
 		if e.x>  e.max-e.largura  then 
 
-			while e.max - e.min <=e.largura*1.5 do
-				e.min = math.random(0, telaX/2-e.largura)
-			end
+			--while e.max - e.min <=e.largura*1.5 do
+			--	e.min = math.random(0, telaX/2-e.largura)
+			--end
 			incremento = incremento*-1
 		end
 		if e.x<e.min then
-			while e.max - e.min <=e.largura*1.5 do
-				e.max = math.random(telaX/2+e.largura, telaX)
-			end
+			--while e.max - e.min <=e.largura*1.5 do
+			--	e.max = math.random(telaX/2+e.largura, telaX)
+			--end
 			incremento = incremento*-1
 		end
 		e.x = e.x+incremento

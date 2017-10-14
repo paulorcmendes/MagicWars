@@ -31,7 +31,7 @@ function zera(codigoInimigo)
 	--	e.max = math.random(telaX/2+e.largura, telaX)
 	--until e.max - e.min > e.largura*1.5  
 	e.min = 0
-	e.max = telaX
+	e.max = telaX-e.largura
 	e.x = math.random(e.min, e.max)
 	e.hp = hp
 	tiros = {}
@@ -48,7 +48,7 @@ function move()
 	if e.y<120 then 
 		e.y = e.y + incremento
 	else
-		if e.x>  e.max-e.largura  then 
+		if e.x>  e.max then 
 
 			--while e.max - e.min <=e.largura*1.5 do
 			--	e.min = math.random(0, telaX/2-e.largura)

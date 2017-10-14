@@ -5,7 +5,7 @@ M = {}
 function credits_load()
 	button={}
 	background = love.graphics.newImage("Sprites/credits.png")
-	menuButton = love.graphics.newImage("Sprites/menuButton.png")
+	menuButton = love.graphics.newImage("Sprites/MenuButton.png")
 	table.insert(button, {x=375,y=620,image=menuButton,id="menu", mouseover=false})
 
 end

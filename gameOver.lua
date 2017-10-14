@@ -7,7 +7,7 @@ function gameOver_load()
 	velocidade = 1
 	scoreFont = love.graphics.setNewFont("Font/score.ttf", 30)
 	background = love.graphics.newImage("Sprites/gameOver.png")
-	menuButton = love.graphics.newImage("Sprites/menuButton.png")
+	menuButton = love.graphics.newImage("Sprites/MenuButton.png")
 	tryAgainButton = love.graphics.newImage("Sprites/tryAgainButton.png")
 
 	table.insert(button, {x=683-menuButton:getWidth()-10,y=250,image=menuButton,id="menu", mouseover=false})
